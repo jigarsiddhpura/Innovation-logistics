@@ -10,7 +10,7 @@ load_dotenv()
 app = Flask(__name__)
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 BLANDAI_API_KEY = os.getenv("BLANDAI_API_KEY")
-MONGO_URI = "mongodb+srv://aryannvr:aryan181527@cluster0.pgxdqvd.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+MONGO_URI = "mongodb+srv://aryannvr:aryan181527@cluster0.pgxdqvd.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"  # KEEP THIS AS IT IS , DO NOT USE GETENV HERE
 
 # MongoDB Configuration
 try:
@@ -21,17 +21,17 @@ try:
 except Exception as e:
     print(f"Failed to connect to MongoDB: {e}")
 
+
 @app.route("/request-call", methods=["POST"])
 def request_call():
     """
     Endpoint for Shopify sellers to request a grievance call.
 
-    
+    Example Request Body:
     {
-    "user_id": "12345",
-    "phone_number": "+1234567890"
+        "user_id": "12345",
+        "phone_number": "+1234567890"
     }
-
     """
     data = request.json
     user_id = data.get("user_id")
@@ -51,8 +51,6 @@ def request_call():
         "task": """
                 You are a professional and empathetic grievance manager for Amazon Multi-Channel Fulfillment (MCF), assisting Shopify users with their order-related issues. Your role is to listen attentively, identify the grievance, and provide actionable resolutions or next steps in a polite and clear manner. 
                 Maintain a professional tone, show understanding of the user's frustration, and focus on resolving the issue promptly. 
-                If necessary, escalate the matter to the appropriate team while reassuring the user of a swift resolution.
-                Ensure all interactions reflect Amazon's commitment to excellent service and customer satisfaction.
                 """,
         "wait_for_greeting": False,
         "language": "ENG",
@@ -60,45 +58,53 @@ def request_call():
     }
 
     try:
+        # Make a request to the Bland AI API
         response = requests.post(
             bland_api_url, json=bland_api_payload, headers=bland_api_headers
         )
         response_data = response.json()
-        
-        if response.status_code != 200:
-            return (
-                jsonify({"error": "Failed to initiate call", "details": response_data}),
-                500,
-            )
 
-        # Extract details from response
+        if response.status_code != 200:
+            return jsonify({"error": "Failed to initiate call", "details": response_data}), 500
+
+        # Extract response data
         call_id = response_data.get("call_id")
+        batch_id = response_data.get("batch_id")
+        message = response_data.get("message")
         status = response_data.get("status")
 
-        # Save call metadata in MongoDB
-        call_data = {
-            "call_id": call_id,
-            "user_id": user_id,
-            "phone_number": phone_number,
-            "status": status,
-            "timestamp": datetime.now(),
-            "duration": None,
-            "transcript_summary": None,
-            "priority": None,
+        # Construct the success response
+        success_response = {
+            "message": "Call successfully initiated",
+            "response_data": {
+                "batch_id": batch_id,
+                "call_id": call_id,
+                "message": message,
+                "status": status,
+            }
         }
-        calls_collection.insert_one(call_data)
-        print(f"Call data inserted for call_id: {call_id}")
 
-        return jsonify({"message": "Call successfully queued", "call_id": call_id}), 200
+        # Push to MongoDB
+        try:
+            calls_collection.insert_one({
+                "user_id": user_id,
+                "phone_number": phone_number,
+                "batch_id": batch_id,
+                "call_id": call_id,
+                "message": message,
+                "status": status,
+                "timestamp": datetime.now(),
+            })
+            print(f"Call data inserted for call_id: {call_id}")
+        except Exception as db_error:
+            print(f"Error inserting call data to MongoDB: {db_error}")
+
+        # Return the success response
+        return jsonify(success_response), 200
 
     except Exception as e:
         print(f"Error in request_call: {e}")
-        return (
-            jsonify(
-                {"error": "An error occurred while sending the call", "details": str(e)}
-            ),
-            500,
-        )
+        return jsonify({"error": "An error occurred while sending the call", "details": str(e)}), 500
 
 @app.route('/call-details/<call_id>', methods=['GET'])
 def call_details(call_id):
@@ -156,4 +162,4 @@ def call_details(call_id):
         return jsonify({"error": "An error occurred while fetching call details", "details": str(e)}), 500
 
 if __name__ == "__main__":
-    app.run(port=5000)
+    app.run(debug=True,port=5000)
