@@ -3,11 +3,14 @@ package dev.sambhav.mcf.model;
 // 🔴 use jakarta.persistence instead of javax, bcz it is modern 🔴
 
 import jakarta.persistence.*;
+import lombok.Data;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 // import org.springframework.data.annotation.Id;
 
 @Entity
+@Data // pretty much the same as @Getter and @Setter
 @Table(name = "orders")
 public class Order {
 

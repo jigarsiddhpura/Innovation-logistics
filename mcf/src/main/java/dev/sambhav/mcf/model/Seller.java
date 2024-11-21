@@ -2,10 +2,13 @@
 package dev.sambhav.mcf.model;
 
 import jakarta.persistence.*;
+import lombok.Data;
+
 import java.time.LocalDateTime;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
+@Data // pretty much the same as @Getter and @Setter
 @Table(name = "seller")
 public class Seller {
 
@@ -23,7 +26,7 @@ public class Seller {
     @Column(name = "phone", nullable = false, unique = true)
     private String phone;
 
-    // @JsonIgnore
+    @JsonIgnore
     @Column(name = "password_hash", nullable = false)
     private String passwordHash;
 
@@ -52,76 +55,76 @@ public class Seller {
         updatedAt = LocalDateTime.now();
     }
 
-    public Long getSellerId() {
-        return sellerId;
-    }
+    // public Long getSellerId() {
+    //     return sellerId;
+    // }
     
-    public String getName() {
-        return name;
-    }
+    // public String getName() {
+    //     return name;
+    // }
     
-    public String getEmail() {
-        return email;
-    }
+    // public String getEmail() {
+    //     return email;
+    // }
     
-    public String getPhone() {
-        return phone;
-    }
+    // public String getPhone() {
+    //     return phone;
+    // }
     
-    public String getPasswordHash() {
-        return passwordHash;
-    }
+    // public String getPasswordHash() {
+    //     return passwordHash;
+    // }
     
-    public String getShopifyStoreUrl() {
-        return shopifyStoreUrl;
-    }
+    // public String getShopifyStoreUrl() {
+    //     return shopifyStoreUrl;
+    // }
     
-    public String getAmazonMcfAccountId() {
-        return amazonMcfAccountId;
-    }
+    // public String getAmazonMcfAccountId() {
+    //     return amazonMcfAccountId;
+    // }
     
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
+    // public LocalDateTime getCreatedAt() {
+    //     return createdAt;
+    // }
     
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
+    // public LocalDateTime getUpdatedAt() {
+    //     return updatedAt;
+    // }
 
-    public void setSellerId(Long sellerId) {
-        this.sellerId = sellerId;
-    }
+    // public void setSellerId(Long sellerId) {
+    //     this.sellerId = sellerId;
+    // }
     
-    public void setName(String name) {
-        this.name = name;
-    }
+    // public void setName(String name) {
+    //     this.name = name;
+    // }
     
-    public void setEmail(String email) {
-        this.email = email;
-    }
+    // public void setEmail(String email) {
+    //     this.email = email;
+    // }
     
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
+    // public void setPhone(String phone) {
+    //     this.phone = phone;
+    // }
     
-    public void setPasswordHash(String passwordHash) {
-        this.passwordHash = passwordHash;
-    }
+    // public void setPasswordHash(String passwordHash) {
+    //     this.passwordHash = passwordHash;
+    // }
     
-    public void setShopifyStoreUrl(String shopifyStoreUrl) {
-        this.shopifyStoreUrl = shopifyStoreUrl;
-    }
+    // public void setShopifyStoreUrl(String shopifyStoreUrl) {
+    //     this.shopifyStoreUrl = shopifyStoreUrl;
+    // }
     
-    public void setAmazonMcfAccountId(String amazonMcfAccountId) {
-        this.amazonMcfAccountId = amazonMcfAccountId;
-    }
+    // public void setAmazonMcfAccountId(String amazonMcfAccountId) {
+    //     this.amazonMcfAccountId = amazonMcfAccountId;
+    // }
     
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
+    // public void setCreatedAt(LocalDateTime createdAt) {
+    //     this.createdAt = createdAt;
+    // }
     
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
+    // public void setUpdatedAt(LocalDateTime updatedAt) {
+    //     this.updatedAt = updatedAt;
+    // }
 
 }
