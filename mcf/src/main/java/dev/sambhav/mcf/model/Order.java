@@ -65,4 +65,12 @@ public class Order {
         // This method runs BEFORE the record is updated in the database
         updatedAt = LocalDateTime.now();
     }
+
+    public Long getOrderId() {
+        return orderId;
+    }
+
+    public Long getSellerId() {
+        return sellerId;
+    }
 }

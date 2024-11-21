@@ -32,7 +32,7 @@ CREATE TABLE IF NOT EXISTS orders  (
     customer_name VARCHAR(255),
     customer_email VARCHAR(255),
     total_price DECIMAL(10, 2),
-    status VARCHAR(50) CHECK (status IN ('Pending', 'In Progress', 'Shipped', 'Delivered', 'Cancelled')),
+    status VARCHAR(50) CHECK (status IN ('PENDING', 'IN_PROGRESS', 'SHIPPED', 'DELIVERED', 'CANCELLED')),
     sla_met BOOLEAN,
     delivery_eta TIMESTAMP,
     created_at TIMESTAMP DEFAULT NOW(),
