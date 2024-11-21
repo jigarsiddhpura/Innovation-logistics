@@ -1,3 +1,7 @@
+DROP TABLE IF EXISTS returns CASCADE;
+DROP TABLE IF EXISTS orders CASCADE;
+DROP TYPE IF EXISTS order_status CASCADE;
+
 CREATE TABLE IF NOT EXISTS seller  (
     seller_id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
@@ -24,6 +28,26 @@ CREATE TABLE IF NOT EXISTS products  (
     updated_at TIMESTAMP DEFAULT NOW()
 );
 
+
+CREATE TYPE order_status AS ENUM ('PENDING', 'IN_PROGRESS', 'SHIPPED', 'DELIVERED', 'CANCELLED');
+-- 🔴 `IF NOT EXISTS` is not supported for enum types in PostgreSQL, so we use below approach 🔴
+
+-- Create enum type safely
+-- DO 
+-- $$ 
+-- BEGIN
+--     IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'order_status') THEN
+--         CREATE TYPE order_status AS ENUM (
+--             'PENDING',
+--             'IN_PROGRESS', 
+--             'SHIPPED',
+--             'DELIVERED',
+--             'CANCELLED'
+--         );
+--     END IF;
+-- END
+-- $$;
+
 CREATE TABLE IF NOT EXISTS orders  (
     order_id SERIAL PRIMARY KEY,
     seller_id INT REFERENCES seller(seller_id) ON DELETE CASCADE,
@@ -32,7 +56,7 @@ CREATE TABLE IF NOT EXISTS orders  (
     customer_name VARCHAR(255),
     customer_email VARCHAR(255),
     total_price DECIMAL(10, 2),
-    status VARCHAR(50) CHECK (status IN ('PENDING', 'IN_PROGRESS', 'SHIPPED', 'DELIVERED', 'CANCELLED')),
+    status order_status CHECK (status IN ('PENDING', 'IN_PROGRESS', 'SHIPPED', 'DELIVERED', 'CANCELLED')),
     sla_met BOOLEAN,
     delivery_eta TIMESTAMP,
     created_at TIMESTAMP DEFAULT NOW(),

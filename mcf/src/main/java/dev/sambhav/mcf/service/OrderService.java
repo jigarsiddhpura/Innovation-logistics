@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import dev.sambhav.mcf.model.Order;
+import dev.sambhav.mcf.model.OrderStatus;
 import dev.sambhav.mcf.model.Seller;
 import dev.sambhav.mcf.repository.OrderRepository;
 import jakarta.transaction.Transactional;
@@ -39,5 +40,9 @@ public class OrderService {
 
     public List<Order> getAllOrders() {
         return orderRepository.findAll();
+    }
+
+    public OrderStatus track(Long orderId) {
+        return orderRepository.getOrderStatus(orderId);
     }
 }

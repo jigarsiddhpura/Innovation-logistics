@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 // import org.springframework.data.annotation.Id;
 
 @Entity
-@Data // pretty much the same as @Getter and @Setter
+@Data // pretty much the same as @Getter and @Setter using Lombok library ⭐⭐
 @Table(name = "orders")
 public class Order {
 
@@ -37,8 +37,9 @@ public class Order {
     @Column(name = "total_price")
     private BigDecimal totalPrice;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    private String status;
+    private OrderStatus  status;
 
     @Column(name = "sla_met")
     private Boolean slaMet;
@@ -69,11 +70,4 @@ public class Order {
         updatedAt = LocalDateTime.now();
     }
 
-    public Long getOrderId() {
-        return orderId;
-    }
-
-    public Long getSellerId() {
-        return sellerId;
-    }
 }
