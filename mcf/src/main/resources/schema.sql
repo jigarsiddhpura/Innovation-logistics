@@ -1,4 +1,4 @@
-CREATE TABLE seller IF NOT EXISTS (
+CREATE TABLE IF NOT EXISTS seller  (
     seller_id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     email VARCHAR(255) UNIQUE NOT NULL,
@@ -10,9 +10,9 @@ CREATE TABLE seller IF NOT EXISTS (
     updated_at TIMESTAMP DEFAULT NOW()
 );
 
-CREATE TABLE products IF NOT EXISTS (
+CREATE TABLE IF NOT EXISTS products  (
     product_id SERIAL PRIMARY KEY,
-    seller_id INT REFERENCES users(seller_id) ON DELETE CASCADE,
+    seller_id INT REFERENCES seller(seller_id) ON DELETE CASCADE,
     shopify_product_id VARCHAR(255) UNIQUE,
     amazon_mcf_sku VARCHAR(255) UNIQUE,
     name VARCHAR(255),
@@ -24,9 +24,9 @@ CREATE TABLE products IF NOT EXISTS (
     updated_at TIMESTAMP DEFAULT NOW()
 );
 
-CREATE TABLE orders IF NOT EXISTS (
+CREATE TABLE IF NOT EXISTS orders  (
     order_id SERIAL PRIMARY KEY,
-    seller_id INT REFERENCES users(seller_id) ON DELETE CASCADE,
+    seller_id INT REFERENCES seller(seller_id) ON DELETE CASCADE,
     shopify_order_id VARCHAR(255) UNIQUE,
     amazon_mcf_order_id VARCHAR(255),
     customer_name VARCHAR(255),
@@ -39,7 +39,7 @@ CREATE TABLE orders IF NOT EXISTS (
     updated_at TIMESTAMP DEFAULT NOW()
 );
 
-CREATE TABLE returns IF NOT EXISTS (
+CREATE TABLE IF NOT EXISTS returns  (
     return_id SERIAL PRIMARY KEY,
     order_id INT REFERENCES orders(order_id) ON DELETE CASCADE,
     reason TEXT,
@@ -48,7 +48,7 @@ CREATE TABLE returns IF NOT EXISTS (
     updated_at TIMESTAMP DEFAULT NOW()
 );
 
-CREATE TABLE inventory_logs IF NOT EXISTS (
+CREATE TABLE IF NOT EXISTS inventory_logs  (
     log_id SERIAL PRIMARY KEY,
     product_id INT REFERENCES products(product_id) ON DELETE CASCADE,
     change_type VARCHAR(50) CHECK (change_type IN ('Add', 'Subtract', 'Forecast')),
@@ -57,7 +57,7 @@ CREATE TABLE inventory_logs IF NOT EXISTS (
     created_at TIMESTAMP DEFAULT NOW()
 );
 
-CREATE TABLE forecasts IF NOT EXISTS (
+CREATE TABLE IF NOT EXISTS forecasts  (
     forecast_id SERIAL PRIMARY KEY,
     product_id INT REFERENCES products(product_id) ON DELETE CASCADE,
     forecasted_inventory INT,
