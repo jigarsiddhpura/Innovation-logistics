@@ -2,9 +2,12 @@
 package dev.sambhav.mcf.controller;
 
 import dev.sambhav.mcf.dto.ProductRequest;
+import dev.sambhav.mcf.dto.ProductRequestDTO;
+import dev.sambhav.mcf.dto.ProductResponseDTO;
 import dev.sambhav.mcf.model.Product;
 import dev.sambhav.mcf.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,22 +20,26 @@ public class ProductController {
     private ProductService productService;
 
     @PostMapping
-    public Product addProduct(@RequestBody ProductRequest productRequest) {
-        return productService.addProduct(productRequest);
+    public ResponseEntity<ProductResponseDTO> addProduct(@RequestBody ProductRequestDTO productRequestDTO) {
+        ProductResponseDTO createdProduct = productService.addProduct(productRequestDTO);
+        return ResponseEntity.ok(createdProduct);
     }
 
     @GetMapping("/{id}")
-    public Product getProductById(@PathVariable Long id){
-        return productService.getProductById(id);
+    public ResponseEntity<ProductResponseDTO> getProductById(@PathVariable Long id) {
+        ProductResponseDTO product = productService.getProductById(id);
+        return ResponseEntity.ok(product);
     }
 
     @GetMapping("/name/{name}")
-    public List<Product> getProductsByName(@PathVariable String name){
-        return productService.getProductsByName(name);
+    public ResponseEntity<List<ProductResponseDTO>> getProductsByName(@PathVariable String name) {
+        List<ProductResponseDTO> products = productService.getProductsByName(name);
+        return ResponseEntity.ok(products);
     }
 
     @GetMapping
-    public List<Product> getAllProducts(){
-        return productService.getAllProducts();
+    public ResponseEntity<List<ProductResponseDTO>> getAllProducts() {
+        List<ProductResponseDTO> products = productService.getAllProducts();
+        return ResponseEntity.ok(products);
     }
 }

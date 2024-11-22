@@ -1,7 +1,6 @@
 package dev.sambhav.mcf.model;
 
-public enum OrderStatus {
-    // 'Pending', 'In Progress', 'Shipped', 'Delivered', 'Cancelled'
+public enum OrderStatus{
     PENDING,
     IN_PROGRESS,
     SHIPPED,

@@ -50,13 +50,13 @@ CREATE TYPE order_status AS ENUM ('PENDING', 'IN_PROGRESS', 'SHIPPED', 'DELIVERE
 
 CREATE TABLE IF NOT EXISTS orders  (
     order_id SERIAL PRIMARY KEY,
-    seller_id INT REFERENCES seller(seller_id) ON DELETE CASCADE,
+    seller_id INT REFERENCES seller(seller_id),
     shopify_order_id VARCHAR(255) UNIQUE,
     amazon_mcf_order_id VARCHAR(255),
     customer_name VARCHAR(255),
     customer_email VARCHAR(255),
     total_price DECIMAL(10, 2),
-    status order_status CHECK (status IN ('PENDING', 'IN_PROGRESS', 'SHIPPED', 'DELIVERED', 'CANCELLED')),
+    status order_status DEFAULT 'PENDING',
     sla_met BOOLEAN,
     delivery_eta TIMESTAMP,
     created_at TIMESTAMP DEFAULT NOW(),
@@ -65,7 +65,7 @@ CREATE TABLE IF NOT EXISTS orders  (
 
 CREATE TABLE IF NOT EXISTS returns  (
     return_id SERIAL PRIMARY KEY,
-    order_id INT REFERENCES orders(order_id) ON DELETE CASCADE,
+    order_id INT REFERENCES orders(order_id),
     reason TEXT,
     status VARCHAR(50) CHECK (status IN ('Pending', 'Approved', 'Rejected', 'Completed')),
     created_at TIMESTAMP DEFAULT NOW(),
@@ -74,7 +74,7 @@ CREATE TABLE IF NOT EXISTS returns  (
 
 CREATE TABLE IF NOT EXISTS inventory_logs  (
     log_id SERIAL PRIMARY KEY,
-    product_id INT REFERENCES products(product_id) ON DELETE CASCADE,
+    product_id INT REFERENCES products(product_id),
     change_type VARCHAR(50) CHECK (change_type IN ('Add', 'Subtract', 'Forecast')),
     quantity INT,
     notes TEXT,
@@ -83,7 +83,7 @@ CREATE TABLE IF NOT EXISTS inventory_logs  (
 
 CREATE TABLE IF NOT EXISTS forecasts  (
     forecast_id SERIAL PRIMARY KEY,
-    product_id INT REFERENCES products(product_id) ON DELETE CASCADE,
+    product_id INT REFERENCES products(product_id),
     forecasted_inventory INT,
     forecast_date TIMESTAMP,
     notes TEXT,

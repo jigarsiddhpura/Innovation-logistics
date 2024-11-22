@@ -1,44 +1,52 @@
 package dev.sambhav.mcf.controller;
 
-import org.springframework.web.bind.annotation.RestController;
-
+import dev.sambhav.mcf.Mapper.OrderMapper;
+import dev.sambhav.mcf.dto.AllOrdersDTO;
+import dev.sambhav.mcf.dto.OrderResponseDTO;
+import dev.sambhav.mcf.dto.OrderStatusDTO;
 import dev.sambhav.mcf.model.Order;
 import dev.sambhav.mcf.model.OrderStatus;
 import dev.sambhav.mcf.service.OrderService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
 @RestController
 @RequestMapping("/api")
 @CrossOrigin(origins = "http://localhost:3000")
 public class OrderController {
-    @Autowired
+
+    @Autowired(required = false)
     private OrderService orderService;
 
-    // @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping("/fulfil-order")
-    public Order fulfilOrder(@RequestBody Order order) {
-        return orderService.saveOrderToMcf(order);
+    @PostMapping("orders/create")
+    public ResponseEntity<OrderResponseDTO> createOrder(@RequestBody Order order) {
+        // Modularized naming and added ResponseEntity for consistency
+        Order createdOrder = orderService.saveOrderToMcf(order);
+        return ResponseEntity.ok(OrderMapper.toResponseDTO(order));
+    }
+
+    @PutMapping("orders/{orderId}/fulfill")
+    public ResponseEntity<OrderResponseDTO> fulfillOrder(@PathVariable Long orderId) {
+        // Modularized naming and added ResponseEntity for consistency
+        Order updatedOrder = orderService.fulfillOrder(orderId);
+        return ResponseEntity.ok(OrderMapper.toResponseDTO(updatedOrder));
     }
 
     @GetMapping("/orders")
-    public List<Order> getAllOrders() {
-        return orderService.getAllOrders();
+    public ResponseEntity<List<AllOrdersDTO>> getAllOrders() {
+        // Added ResponseEntity for standardizing responses
+        List<Order> orders = orderService.getAllOrders();
+        List<AllOrdersDTO> ordersDTOS=orders.stream().map(OrderMapper::getAllOrders).toList();
+        return ResponseEntity.ok(ordersDTOS);
     }
 
-    @GetMapping("/track/order/{orderId}")
-    public OrderStatus trackOrder(@PathVariable Long orderId) {
-        return orderService.track(orderId);
+    @GetMapping("/orders/{orderId}/track")
+    public ResponseEntity<OrderStatusDTO> trackOrder(@PathVariable Long orderId) {
+        OrderStatus status = orderService.track(orderId);
+        OrderStatusDTO statusDTO = OrderMapper.toOrderStatusDTO(status);
+        return ResponseEntity.ok(statusDTO);
     }
 }
