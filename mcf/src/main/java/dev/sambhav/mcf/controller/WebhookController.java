@@ -45,6 +45,25 @@ public class WebhookController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error processing webhook");
         }
     }
+    
+        @PostMapping("/order-created")
+        public ResponseEntity<String> handleOrderCreated(
+            @RequestBody String payload,
+            @RequestHeader("X-Shopify-Hmac-Sha256") String hmacHeader) {
+    
+            // Verify Shopify Webhook (implement this method)
+            if (!verifyShopifyWebhook(payload, hmacHeader)) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid webhook signature");
+            }
+    
+            try {
+                orderService.saveOrderFromWebhook(payload);
+                return ResponseEntity.ok("Order saved successfully");
+            } catch (Exception e) {
+                e.printStackTrace();
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            }
+        }
 
     private boolean verifyShopifyWebhook(String payload, String hmacHeader) {
         try {
@@ -58,17 +77,6 @@ public class WebhookController {
         } catch (Exception e) {
             e.printStackTrace();
             return false;
-        }
-    }
-
-    @PostMapping("/order-created")
-    public ResponseEntity<OrderResponseDTO> handleOrderCreated(@RequestBody OrderRequestDTO dto) {
-        try {
-            Order savedOrder = orderService.saveOrderToMcf(OrderMapper.toEntity(dto));
-            return ResponseEntity.ok(OrderMapper.toResponseDTO(savedOrder));
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 }

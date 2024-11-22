@@ -49,17 +49,17 @@ public class Order {
     @Column(name = "processed_at")
     private LocalDateTime processedAt;
 
-    @PrePersist
-    protected void onCreate() {
-        if (fulfillmentStatus == null) {
-            fulfillmentStatus = OrderStatus.PENDING; // Default status set
-        }
-        createdAt = LocalDateTime.now();
-        processedAt = LocalDateTime.now();
-    }
+    // @PrePersist
+    // protected void onCreate() {
+    //     if (fulfillmentStatus == null) {
+    //         fulfillmentStatus = OrderStatus.PENDING; // Default status set
+    //     }
+    //     createdAt = LocalDateTime.now();
+    //     processedAt = LocalDateTime.now();
+    // }
 
-    @PreUpdate
-    protected void onUpdate() {
-        processedAt = LocalDateTime.now();
-    }
+    // @PreUpdate
+    // protected void onUpdate() {
+    //     processedAt = LocalDateTime.now();
+    // }
 }

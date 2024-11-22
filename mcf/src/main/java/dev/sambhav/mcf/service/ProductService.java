@@ -8,6 +8,8 @@ import dev.sambhav.mcf.model.Product;
 import dev.sambhav.mcf.model.Seller;
 import dev.sambhav.mcf.repository.ProductRepository;
 import dev.sambhav.mcf.repository.SellerRepository;
+import jakarta.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.http.HttpStatus;
@@ -66,6 +68,7 @@ public class ProductService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public void saveProductFromWebhook(String payload) throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode rootNode = objectMapper.readTree(payload);
