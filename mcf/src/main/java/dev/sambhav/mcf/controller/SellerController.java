@@ -26,6 +26,7 @@ public class SellerController {
     @GetMapping("/{id}")
     public ResponseEntity<SellerResponseDTO> getSellerById(@PathVariable Long id) {
         SellerResponseDTO seller = sellerService.getSellerById(id);
+
         return ResponseEntity.ok(seller);
     }
 
