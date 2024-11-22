@@ -18,6 +18,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -79,8 +80,8 @@ public class ProductService {
         product.setPrice(new BigDecimal(rootNode.get("variants").get(0).get("price").asText())); // First variant price
         product.setInventoryLevel(rootNode.get("variants").get(0).get("inventory_quantity").asInt());
         product.setAmazonMcfSku(rootNode.get("variants").get(0).get("sku").asText());
-        product.setPublishedAt(LocalDateTime.parse(rootNode.get("published_at").asText().replace("Z", "")));
-        product.setUpdatedAt(LocalDateTime.parse(rootNode.get("updated_at").asText().replace("Z", "")));
+        product.setPublishedAt(OffsetDateTime.parse(rootNode.get("published_at").asText().replace("Z", "")).toLocalDateTime());
+        product.setUpdatedAt(OffsetDateTime.parse(rootNode.get("updated_at").asText().replace("Z", "")).toLocalDateTime());
 
         // Save to database
         productRepository.save(product);
