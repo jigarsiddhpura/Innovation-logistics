@@ -1,6 +1,3 @@
-DROP TABLE IF EXISTS returns CASCADE;
-DROP TABLE IF EXISTS orders CASCADE;
-DROP TYPE IF EXISTS order_status CASCADE;
 
 CREATE TABLE IF NOT EXISTS seller  (
     seller_id SERIAL PRIMARY KEY,
@@ -14,22 +11,21 @@ CREATE TABLE IF NOT EXISTS seller  (
     updated_at TIMESTAMP DEFAULT NOW()
 );
 
-CREATE TABLE IF NOT EXISTS products  (
-    product_id SERIAL PRIMARY KEY,
-    seller_id INT REFERENCES seller(seller_id) ON DELETE CASCADE,
-    shopify_product_id VARCHAR(255) UNIQUE,
-    amazon_mcf_sku VARCHAR(255) UNIQUE,
-    name VARCHAR(255),
+CREATE TABLE IF NOT EXISTS products (
+    product_id BIGINT PRIMARY KEY, -- Changed from SERIAL to match Long productId
+    title VARCHAR(255),
+    product_type VARCHAR(255),
+    vendor VARCHAR(255),
     description TEXT,
     price DECIMAL(10, 2),
     inventory_level INT,
-    reorder_threshold INT DEFAULT 0,
-    created_at TIMESTAMP DEFAULT NOW(),
-    updated_at TIMESTAMP DEFAULT NOW()
+    amazon_mcf_sku VARCHAR(255) UNIQUE,
+    published_at TIMESTAMP,
+    updated_at TIMESTAMP
 );
 
 
-CREATE TYPE order_status AS ENUM ('PENDING', 'IN_PROGRESS', 'SHIPPED', 'DELIVERED', 'CANCELLED');
+-- CREATE TYPE order_status AS ENUM ('PENDING', 'IN_PROGRESS', 'SHIPPED', 'DELIVERED', 'CANCELLED');
 -- 🔴 `IF NOT EXISTS` is not supported for enum types in PostgreSQL, so we use below approach 🔴
 
 -- Create enum type safely
@@ -49,13 +45,13 @@ CREATE TYPE order_status AS ENUM ('PENDING', 'IN_PROGRESS', 'SHIPPED', 'DELIVERE
 -- $$;
 
 CREATE TABLE IF NOT EXISTS orders  (
-    order_id SERIAL PRIMARY KEY,
+    order_number SERIAL PRIMARY KEY,
     seller_id INT REFERENCES seller(seller_id),
     shopify_order_id VARCHAR(255) UNIQUE,
     amazon_mcf_order_id VARCHAR(255),
     customer_name VARCHAR(255),
-    customer_email VARCHAR(255),
-    total_price DECIMAL(10, 2),
+    email VARCHAR(255),
+    current_total_price DECIMAL(10, 2),
     status order_status DEFAULT 'PENDING',
     sla_met BOOLEAN,
     delivery_eta TIMESTAMP,
@@ -66,9 +62,9 @@ CREATE TABLE IF NOT EXISTS orders  (
 CREATE TABLE IF NOT EXISTS returns  (
     return_id SERIAL PRIMARY KEY,
     order_id INT REFERENCES orders(order_id),
-    reason TEXT,
+    note TEXT,
     status VARCHAR(50) CHECK (status IN ('Pending', 'Approved', 'Rejected', 'Completed')),
-    created_at TIMESTAMP DEFAULT NOW(),
+    processed_at TIMESTAMP DEFAULT NOW(),
     updated_at TIMESTAMP DEFAULT NOW()
 );
 
