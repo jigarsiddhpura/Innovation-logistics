@@ -1,7 +1,6 @@
 // File: src/main/java/dev/sambhav/mcf/controller/ProductController.java
 package dev.sambhav.mcf.controller;
 
-import dev.sambhav.mcf.dto.ProductRequest;
 import dev.sambhav.mcf.dto.ProductRequestDTO;
 import dev.sambhav.mcf.dto.ProductResponseDTO;
 import dev.sambhav.mcf.model.Product;

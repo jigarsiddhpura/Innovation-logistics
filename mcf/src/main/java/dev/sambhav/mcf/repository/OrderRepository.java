@@ -12,6 +12,6 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     Order findByAmazonMcfOrderId(String amazonMcfOrderId);
     Order findBySellerId(Long sellerId);
 
-    @Query("SELECT o.status FROM Order o WHERE o.orderId = :orderId")
+    @Query("SELECT o.fulfillmentStatus FROM Order o WHERE o.orderId = :orderId")
     OrderStatus getOrderStatus(@Param("orderId") Long orderId);
 }

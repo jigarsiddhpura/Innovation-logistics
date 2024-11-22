@@ -45,18 +45,17 @@ CREATE TABLE IF NOT EXISTS products (
 -- $$;
 
 CREATE TABLE IF NOT EXISTS orders  (
-    order_number SERIAL PRIMARY KEY,
+    order_id BIGINT PRIMARY KEY,
     seller_id INT REFERENCES seller(seller_id),
-    shopify_order_id VARCHAR(255) UNIQUE,
     amazon_mcf_order_id VARCHAR(255),
     customer_name VARCHAR(255),
     email VARCHAR(255),
     current_total_price DECIMAL(10, 2),
-    status order_status DEFAULT 'PENDING',
+    fulfillment_status order_status DEFAULT 'PENDING',
     sla_met BOOLEAN,
     delivery_eta TIMESTAMP,
     created_at TIMESTAMP DEFAULT NOW(),
-    updated_at TIMESTAMP DEFAULT NOW()
+    processed_at TIMESTAMP DEFAULT NOW()
 );
 
 CREATE TABLE IF NOT EXISTS returns  (

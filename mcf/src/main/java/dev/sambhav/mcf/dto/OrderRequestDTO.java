@@ -5,18 +5,20 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
 @Builder
 public class OrderRequestDTO {
+    private Long orderId;
     private Long sellerId;
-    private String shopifyOrderId;
-    private String amazonMcfOrderId;
     private String customerName;
-    private String customerEmail;
-    private BigDecimal totalPrice;
+    private String email;
+    private BigDecimal currentTotalPrice;
+    private String fulfillmentStatus;
     private Boolean slaMet;
-    private LocalDateTime deliveryEta;
+    private String deliveryEta;
+    private String createdAt;
+    private String processedAt;
 }
+

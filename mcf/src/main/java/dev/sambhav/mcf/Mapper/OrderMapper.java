@@ -1,5 +1,8 @@
 package dev.sambhav.mcf.Mapper;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 import dev.sambhav.mcf.dto.AllOrdersDTO;
 import dev.sambhav.mcf.dto.OrderRequestDTO;
 import dev.sambhav.mcf.dto.OrderResponseDTO;
@@ -11,36 +14,49 @@ import lombok.Data;
 @Data
 public class OrderMapper {
 
+    // WAS PUBLIC STATIC INITITALLY
     public static Order toEntity(OrderRequestDTO dto) {
         Order order = new Order();
+        order.setOrderId(dto.getOrderId());
         order.setSellerId(dto.getSellerId());
-        order.setShopifyOrderId(dto.getShopifyOrderId());
-        order.setAmazonMcfOrderId(dto.getAmazonMcfOrderId());
         order.setCustomerName(dto.getCustomerName());
-        order.setCustomerEmail(dto.getCustomerEmail());
-        order.setTotalPrice(dto.getTotalPrice());
+        order.setEmail(dto.getEmail());
+        order.setCurrentTotalPrice(dto.getCurrentTotalPrice());
+        order.setFulfillmentStatus(null);
         order.setSlaMet(dto.getSlaMet());
-        order.setDeliveryEta(dto.getDeliveryEta());
+
+        // Handle LocalDateTime parsing
+        DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
+        if (dto.getDeliveryEta() != null) {
+            order.setDeliveryEta(LocalDateTime.parse(dto.getDeliveryEta(), formatter));
+        }
+        order.setCreatedAt(LocalDateTime.parse(dto.getCreatedAt(), formatter));
+        order.setProcessedAt(LocalDateTime.parse(dto.getProcessedAt(), formatter));
+
         return order;
     }
 
+    // WAS PUBLIC STATIC INITITALLY
     public static OrderResponseDTO toResponseDTO(Order order) {
-        return new OrderResponseDTO(
-                order.getOrderId(),
-                order.getShopifyOrderId(),
-                order.getAmazonMcfOrderId(),
-                order.getCustomerName(),
-                order.getStatus().name(),
-                order.getUpdatedAt()
-        );
+        OrderResponseDTO responseDTO = new OrderResponseDTO(null, null, null, null, null, null, null, null, null);
+        responseDTO.setOrderId(order.getOrderId());
+        responseDTO.setCustomerName(order.getCustomerName());
+        responseDTO.setEmail(order.getEmail());
+        responseDTO.setCurrentTotalPrice(order.getCurrentTotalPrice());
+        responseDTO.setFulfillmentStatus(null);
+        responseDTO.setSlaMet(order.getSlaMet());
+        responseDTO.setDeliveryEta(order.getDeliveryEta());
+        responseDTO.setCreatedAt(order.getCreatedAt());
+        responseDTO.setProcessedAt(order.getProcessedAt());
+
+        return responseDTO;
     }
 
     public static AllOrdersDTO getAllOrders(Order order) {
         return new AllOrdersDTO(
                 order.getOrderId(),
-                order.getShopifyOrderId(),
-                order.getStatus().name(),
-                order.getTotalPrice()
+                order.getFulfillmentStatus().name(),
+                order.getCurrentTotalPrice()
         );
     }
 

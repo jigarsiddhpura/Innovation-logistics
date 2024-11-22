@@ -26,8 +26,8 @@ public class OrderService {
         SellerResponseDTO seller = getSellerById(order.getSellerId());
 
         // Ensuring default status
-        if (order.getStatus() == null) {
-            order.setStatus(OrderStatus.PENDING);
+        if (order.getFulfillmentStatus() == null) {
+            order.setFulfillmentStatus(OrderStatus.PENDING);
         }
 
         return orderRepository.save(order); // Saving the order
@@ -47,18 +47,19 @@ public class OrderService {
         Order order = getOrderById(orderId);
 
         // Ensuring the order is in the correct state
-        if (order.getStatus() != OrderStatus.PENDING) {
+        if (order.getFulfillmentStatus() != OrderStatus.PENDING) {
             throw new IllegalArgumentException("Order is already fulfilled or in progress.");
         }
 
         // Updating the status
-        order.setStatus(OrderStatus.IN_PROGRESS);
+        order.setFulfillmentStatus(OrderStatus.IN_PROGRESS);
 
         return orderRepository.save(order); // Saving the updated order
     }
 
     // Helper method to fetch an order by ID
     private Order getOrderById(Long orderId) {
+        // TODO: FIND BY ORDERID wasn't working
         return orderRepository.findById(orderId)
                 .orElseThrow(() -> new IllegalArgumentException("Order not found with id: " + orderId));
     }
@@ -67,4 +68,6 @@ public class OrderService {
     private SellerResponseDTO getSellerById(Long sellerId) {
         return sellerService.getSellerById(sellerId);
     }
+
+
 }

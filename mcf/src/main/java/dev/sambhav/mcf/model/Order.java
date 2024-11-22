@@ -14,44 +14,52 @@ import java.time.LocalDateTime;
 public class Order {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "order_id")
     private Long orderId;
 
+    @Column(name = "seller_id")
     private Long sellerId;
 
-    private String shopifyOrderId;
-
+    @Column(name = "amazon_mcf_order_id")
     private String amazonMcfOrderId;
 
+    @Column(name = "customer_name")
     private String customerName;
 
-    private String customerEmail;
+    @Column(name = "email")
+    private String email;
 
-    private BigDecimal totalPrice;
+    @Column(name = "current_total_price", precision = 10, scale = 2)
+    private BigDecimal currentTotalPrice;
 
     @JdbcType(PostgreSQLEnumJdbcType.class)
     @Enumerated(EnumType.STRING) // Maps Java enum to database enum type
-    private OrderStatus status;
+    @Column(name = "fulfillment_status", columnDefinition = "order_status DEFAULT 'PENDING'")
+    private OrderStatus fulfillmentStatus;
 
+    @Column(name = "sla_met")
     private Boolean slaMet;
 
+    @Column(name = "delivery_eta")
     private LocalDateTime deliveryEta;
 
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-    private LocalDateTime updatedAt;
+    @Column(name = "processed_at")
+    private LocalDateTime processedAt;
 
     @PrePersist
     protected void onCreate() {
-        if (status == null) {
-            status = OrderStatus.PENDING; // Default status set
+        if (fulfillmentStatus == null) {
+            fulfillmentStatus = OrderStatus.PENDING; // Default status set
         }
         createdAt = LocalDateTime.now();
-        updatedAt = LocalDateTime.now();
+        processedAt = LocalDateTime.now();
     }
 
     @PreUpdate
     protected void onUpdate() {
-        updatedAt = LocalDateTime.now();
+        processedAt = LocalDateTime.now();
     }
 }

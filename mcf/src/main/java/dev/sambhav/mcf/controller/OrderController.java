@@ -2,6 +2,7 @@ package dev.sambhav.mcf.controller;
 
 import dev.sambhav.mcf.Mapper.OrderMapper;
 import dev.sambhav.mcf.dto.AllOrdersDTO;
+import dev.sambhav.mcf.dto.OrderRequestDTO;
 import dev.sambhav.mcf.dto.OrderResponseDTO;
 import dev.sambhav.mcf.dto.OrderStatusDTO;
 import dev.sambhav.mcf.model.Order;
@@ -22,10 +23,10 @@ public class OrderController {
     private OrderService orderService;
 
     @PostMapping("orders/create")
-    public ResponseEntity<OrderResponseDTO> createOrder(@RequestBody Order order) {
+    public ResponseEntity<OrderResponseDTO> createOrder(@RequestBody OrderRequestDTO dto) {
         // Modularized naming and added ResponseEntity for consistency
-        Order createdOrder = orderService.saveOrderToMcf(order);
-        return ResponseEntity.ok(OrderMapper.toResponseDTO(order));
+        Order createdOrder = orderService.saveOrderToMcf(OrderMapper.toEntity(dto));
+        return ResponseEntity.ok(OrderMapper.toResponseDTO(createdOrder));
     }
 
     @PutMapping("orders/{orderId}/fulfill")

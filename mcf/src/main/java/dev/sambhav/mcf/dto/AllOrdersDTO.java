@@ -9,7 +9,6 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 public class AllOrdersDTO {
     private Long orderId;
-    private String shopifyOrderId;
     private String status; // Enum as String
     private BigDecimal totalPrice;
 }

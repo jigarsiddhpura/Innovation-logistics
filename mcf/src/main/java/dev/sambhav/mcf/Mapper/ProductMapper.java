@@ -9,21 +9,19 @@ public class ProductMapper {
     public static ProductResponseDTO toResponseDTO(Product product) {
         return new ProductResponseDTO(
                 product.getProductId(),
-                product.getName(),
+                product.getTitle(),
                 product.getDescription(),
                 product.getPrice(),
-                product.getInventoryLevel(),
-                product.getReorderThreshold()
+                product.getInventoryLevel()
         );
     }
 
     public static Product toEntity(ProductRequestDTO productRequestDTO) {
         Product product = new Product();
-        product.setName(productRequestDTO.getName());
+        product.setTitle(productRequestDTO.getName());
         product.setDescription(productRequestDTO.getDescription());
         product.setPrice(productRequestDTO.getPrice());
         product.setInventoryLevel(productRequestDTO.getInventoryLevel());
-        product.setReorderThreshold(productRequestDTO.getReorderThreshold());
         return product;
     }
 }
