@@ -1,0 +1,49 @@
+{
+    "orders": {
+        "steps": [
+            {
+                "point": 1,
+                "image_url": "https://aapkadhikar.s3.ap-south-1.amazonaws.com/uploads/GridClusterImage5.png",
+                "image_description": "point 1 description for orders."
+            }
+        ]
+    },
+    "returns": {
+        "steps": [
+            {
+                "point": 1,
+                "image_url": "https://aapkadhikar.s3.ap-south-1.amazonaws.com/uploads/CarouselImage3.png",
+                "image_description": "point 1 description for returns."
+            },
+            {
+                "point": 2,
+                "image_url": "https://aapkadhikar.s3.ap-south-1.amazonaws.com/uploads/29-04-24CertifiedThrift0158.jpg",
+                "image_description": "point 2 description for returns."
+            },
+            {
+                "point": 3,
+                "image_url": "https://aapkadhikar.s3.ap-south-1.amazonaws.com/uploads/CarouselImage4.png",
+                "image_description": "point 3 description for returns."
+            }
+        ]
+    },
+    "shipping_help": {
+        "steps": [
+            {
+                "point": 1,
+                "image_url": "https://aapkadhikar.s3.ap-south-1.amazonaws.com/uploads/apple-touch-icon.png",
+                "image_description": "point 1 description for shipping help."
+            },
+            {
+                "point": 2,
+                "image_url": "https://aapkadhikar.s3.ap-south-1.amazonaws.com/uploads/695955_XJEEI_1030_001_100_0000_Light.avif",
+                "image_description": "point 2 description for shipping help."
+            },
+            {
+                "point": 3,
+                "image_url": "https://aapkadhikar.s3.ap-south-1.amazonaws.com/uploads/CarouselImage1.png",
+                "image_description": "Step 3 description for shipping help."
+            }
+        ]
+    }
+}
