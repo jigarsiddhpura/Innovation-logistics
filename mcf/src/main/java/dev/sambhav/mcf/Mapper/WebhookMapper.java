@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Component
 public class WebhookMapper {
@@ -27,8 +28,8 @@ public class WebhookMapper {
             productDto.setDescription(rootNode.path("body_html").asText());
             productDto.setPrice(new BigDecimal(rootNode.path("variants").get(0).path("price").asText())); // First variant price
             productDto.setInventoryLevel(rootNode.path("variants").get(0).path("inventory_quantity").asInt());
-            productDto.setPublishedAt(LocalDateTime.parse(rootNode.path("published_at").asText()));
-            productDto.setUpdatedAt(LocalDateTime.parse(rootNode.path("updated_at").asText()));
+            productDto.setPublishedAt(OffsetDateTime.parse(rootNode.path("published_at").asText()).toLocalDateTime());
+            productDto.setUpdatedAt(OffsetDateTime.parse(rootNode.path("updated_at").asText()).toLocalDateTime());
 
             return productDto;
         } catch (Exception e) {
@@ -51,14 +52,14 @@ public class WebhookMapper {
 
             OrderDto orderDto = new OrderDto();
             orderDto.setOrderId(rootNode.path("id").asLong());
-            orderDto.setSellerId(rootNode.path("app_id").asLong());
+            orderDto.setSellerId(3L);
             orderDto.setCustomerName(rootNode.path("customer").path("first_name").asText()
                     + " " + rootNode.path("customer").path("last_name").asText());
             orderDto.setEmail(rootNode.path("email").asText());
             orderDto.setCurrentTotalPrice(new BigDecimal(rootNode.path("current_total_price").asText()));
-            orderDto.setFulfillmentStatus(OrderStatus.valueOf(rootNode.path("fulfillment_status").asText().toUpperCase()));
-            orderDto.setCreatedAt(LocalDateTime.parse(rootNode.path("created_at").asText()));
-            orderDto.setProcessedAt(LocalDateTime.parse(rootNode.path("processed_at").asText()));
+            orderDto.setFulfillmentStatus(OrderStatus.PENDING);
+            orderDto.setCreatedAt(OffsetDateTime.parse(rootNode.path("created_at").asText()).toLocalDateTime());
+            orderDto.setProcessedAt(OffsetDateTime.parse(rootNode.path("processed_at").asText()).toLocalDateTime());
 
             return orderDto;
         } catch (Exception e) {

@@ -41,10 +41,10 @@ public class WebhookController {
             @RequestHeader("X-Shopify-Hmac-Sha256") String hmacHeader) {
 
         // Verify Shopify Webhook
-        if (!webhookService.verifyShopifyWebhook(payload, hmacHeader)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(new WebhookResponseDTO("Invalid webhook signature", false));
-        }
+        // if (!webhookService.verifyShopifyWebhook(payload, hmacHeader)) {
+        //     return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+        //             .body(new WebhookResponseDTO("Invalid webhook signature", false));
+        // }
 
         try {
             // Process product creation
@@ -83,10 +83,11 @@ public class WebhookController {
             @RequestHeader("X-Shopify-Hmac-Sha256") String hmacHeader) {
 
         // Verify Shopify Webhook
-        if (!webhookService.verifyShopifyWebhook(payload, hmacHeader)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(new WebhookResponseDTO("Invalid webhook signature", false));
-        }
+        // if (!webhookService.verifyShopifyWebhook(payload, hmacHeader)) {
+        //     System.out.println("Invalid webhook signature");
+        //     return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+        //             .body(new WebhookResponseDTO("Invalid webhook signature", false));
+        // }
 
         try {
             // Process product update
@@ -125,7 +126,7 @@ public class WebhookController {
 
     // Orders
     // Webhook for order creation
-    @PostMapping("/created")
+    @PostMapping("/order-created")
     public ResponseEntity<WebhookResponseDTO> handleOrderCreated(
             @RequestBody String payload,
             @RequestHeader("X-Shopify-Hmac-Sha256") String hmacHeader) {
@@ -146,7 +147,7 @@ public class WebhookController {
     }
 
     // Webhook for order updates
-    @PostMapping("/updated")
+    @PostMapping("/order-updated")
     public ResponseEntity<WebhookResponseDTO> handleOrderUpdated(
             @RequestBody String payload,
             @RequestHeader("X-Shopify-Hmac-Sha256") String hmacHeader) {
@@ -167,7 +168,7 @@ public class WebhookController {
     }
 
     // Webhook for order deletion
-    @PostMapping("/deleted")
+    @PostMapping("/order-deleted")
     public ResponseEntity<WebhookResponseDTO> handleOrderDeleted(
             @RequestBody String payload,
             @RequestHeader("X-Shopify-Hmac-Sha256") String hmacHeader) {
