@@ -62,7 +62,9 @@ public class OrderMapper {
 
     public static OrderStatusDTO toOrderStatusDTO(OrderStatus status) {
         String message = generateStatusMessage(status); // Optional message generator
-        return new OrderStatusDTO(status.name(), message);
+        LocalDateTime delivery_eta = LocalDateTime.now().plusDays(1L);
+        Boolean slaMet = (status == OrderStatus.DELIVERED) ? true : false;
+        return new OrderStatusDTO(status.name(), delivery_eta, slaMet, message);
     }
 
     private static String generateStatusMessage(OrderStatus status) {

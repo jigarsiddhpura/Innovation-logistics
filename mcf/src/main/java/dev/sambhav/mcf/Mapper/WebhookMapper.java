@@ -5,20 +5,28 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.sambhav.mcf.dto.OrderDto;
 import dev.sambhav.mcf.dto.ProductDTO;
 import dev.sambhav.mcf.model.OrderStatus;
+import jakarta.servlet.http.HttpSession;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Component
 public class WebhookMapper {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
+    @Autowired
+    private HttpSession session;
+
     public ProductDTO mapToProductDto(String payload) {
         try {
             JsonNode rootNode = objectMapper.readTree(payload);
+            DateTimeFormatter formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
 
             ProductDTO productDto = new ProductDTO();
             productDto.setProductId(rootNode.path("id").asLong());
@@ -28,8 +36,14 @@ public class WebhookMapper {
             productDto.setDescription(rootNode.path("body_html").asText());
             productDto.setPrice(new BigDecimal(rootNode.path("variants").get(0).path("price").asText())); // First variant price
             productDto.setInventoryLevel(rootNode.path("variants").get(0).path("inventory_quantity").asInt());
-            productDto.setPublishedAt(OffsetDateTime.parse(rootNode.path("published_at").asText()).toLocalDateTime());
-            productDto.setUpdatedAt(OffsetDateTime.parse(rootNode.path("updated_at").asText()).toLocalDateTime());
+
+            if (session.getAttribute("store").equals("shopify")) {
+                productDto.setPublishedAt(OffsetDateTime.parse(rootNode.path("published_at").asText()).toLocalDateTime());
+                productDto.setUpdatedAt(OffsetDateTime.parse(rootNode.path("updated_at").asText()).toLocalDateTime());
+            } else {
+                productDto.setPublishedAt(LocalDateTime.parse(rootNode.path("published_at").asText(), formatter));
+                productDto.setUpdatedAt(LocalDateTime.parse(rootNode.path("published_at").asText(), formatter));
+            }
 
             return productDto;
         } catch (Exception e) {
