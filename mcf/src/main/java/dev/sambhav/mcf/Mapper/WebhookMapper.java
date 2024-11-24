@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
 @Component
@@ -23,26 +24,48 @@ public class WebhookMapper {
     @Autowired
     private HttpSession session;
 
-    public ProductDTO mapToProductDto(String payload) {
+    public ProductDTO mapToProductDto(String payload, String platform) {
         try {
             JsonNode rootNode = objectMapper.readTree(payload);
-            DateTimeFormatter formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
+//            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSSX");
 
             ProductDTO productDto = new ProductDTO();
-            productDto.setProductId(rootNode.path("id").asLong());
-            productDto.setTitle(rootNode.path("title").asText());
-            productDto.setProductType(rootNode.path("product_type").asText());
-            productDto.setVendor(rootNode.path("vendor").asText());
-            productDto.setDescription(rootNode.path("body_html").asText());
-            productDto.setPrice(new BigDecimal(rootNode.path("variants").get(0).path("price").asText())); // First variant price
-            productDto.setInventoryLevel(rootNode.path("variants").get(0).path("inventory_quantity").asInt());
 
-            if (session.getAttribute("store").equals("shopify")) {
+            if ("shopify".equalsIgnoreCase(platform)) {
+
+                productDto.setProductId(rootNode.path("id").asLong());
+                productDto.setTitle(rootNode.path("title").asText());
+                productDto.setProductType(rootNode.path("product_type").asText());
+                productDto.setVendor(rootNode.path("vendor").asText());
+                productDto.setDescription(rootNode.path("body_html").asText());
+                productDto.setPrice(new BigDecimal(rootNode.path("variants").get(0).path("price").asText())); // First variant price
+                productDto.setInventoryLevel(rootNode.path("variants").get(0).path("inventory_quantity").asInt());
                 productDto.setPublishedAt(OffsetDateTime.parse(rootNode.path("published_at").asText()).toLocalDateTime());
                 productDto.setUpdatedAt(OffsetDateTime.parse(rootNode.path("updated_at").asText()).toLocalDateTime());
+            } else if ("dukaan".equalsIgnoreCase(platform)) {
+                productDto.setProductId(rootNode.path("id").asLong());
+                productDto.setTitle(rootNode.path("name").asText());
+                productDto.setProductType("customer");  // Since this is a customer record
+                productDto.setVendor(rootNode.path("name").asText());  // Using customer name as vendor
+                productDto.setDescription(rootNode.path("email").asText());  // Using email as description
+                productDto.setPrice(BigDecimal.ZERO);  // Default price since customer payload doesn't have price
+                productDto.setInventoryLevel(0);  // Default inventory since customer payload doesn't have inventory
+
+                String createdAtStr = rootNode.path("created_at").asText();
+                String modifiedAtStr = rootNode.path("modified_at").asText();
+
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.nnnnnnXXX");
+                ZonedDateTime createdAtZdt = ZonedDateTime.parse(createdAtStr, formatter);
+                ZonedDateTime modifiedAtZdt = ZonedDateTime.parse(modifiedAtStr, formatter);
+
+                LocalDateTime createdAt = createdAtZdt.toLocalDateTime();
+                LocalDateTime modifiedAt = modifiedAtZdt.toLocalDateTime();
+
+                productDto.setPublishedAt(createdAt);
+                productDto.setUpdatedAt(modifiedAt);
+
             } else {
-                productDto.setPublishedAt(LocalDateTime.parse(rootNode.path("published_at").asText(), formatter));
-                productDto.setUpdatedAt(LocalDateTime.parse(rootNode.path("published_at").asText(), formatter));
+                throw new IllegalArgumentException("Unsupported platform: " + platform);
             }
 
             return productDto;
