@@ -27,7 +27,7 @@ public class WebhookMapper {
     public ProductDTO mapToProductDto(String payload, String platform) {
         try {
             JsonNode rootNode = objectMapper.readTree(payload);
-//            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSSX");
+            DateTimeFormatter formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
 
             ProductDTO productDto = new ProductDTO();
 
@@ -44,25 +44,20 @@ public class WebhookMapper {
                 productDto.setUpdatedAt(OffsetDateTime.parse(rootNode.path("updated_at").asText()).toLocalDateTime());
             } else if ("dukaan".equalsIgnoreCase(platform)) {
                 productDto.setProductId(rootNode.path("id").asLong());
-                productDto.setTitle(rootNode.path("name").asText());
+                productDto.setTitle(rootNode.path("title").asText());
                 productDto.setProductType("customer");  // Since this is a customer record
                 productDto.setVendor(rootNode.path("name").asText());  // Using customer name as vendor
-                productDto.setDescription(rootNode.path("email").asText());  // Using email as description
-                productDto.setPrice(BigDecimal.ZERO);  // Default price since customer payload doesn't have price
-                productDto.setInventoryLevel(0);  // Default inventory since customer payload doesn't have inventory
+                productDto.setDescription(rootNode.path("body_html").asText());  // Using email as description
+                productDto.setPrice(new BigDecimal(rootNode.path("variants").get(0).path("price").asInt()));  // Default price since customer payload doesn't have price
+                productDto.setInventoryLevel(rootNode.path("variants").get(0).path("inventory_quantity").asInt());  // Default inventory since customer payload doesn't have inventory
 
-                String createdAtStr = rootNode.path("created_at").asText();
-                String modifiedAtStr = rootNode.path("modified_at").asText();
+                // String createdAtDateTimeStr = rootNode.path("created_at").asText().trim();
+                // String updatedAtDateTimeStr = rootNode.path("updated_at").asText().trim();
+                // System.out.println("Created At: " + createdAtDateTimeStr);
+                // System.out.println("Updated At: " + updatedAtDateTimeStr);
 
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.nnnnnnXXX");
-                ZonedDateTime createdAtZdt = ZonedDateTime.parse(createdAtStr, formatter);
-                ZonedDateTime modifiedAtZdt = ZonedDateTime.parse(modifiedAtStr, formatter);
-
-                LocalDateTime createdAt = createdAtZdt.toLocalDateTime();
-                LocalDateTime modifiedAt = modifiedAtZdt.toLocalDateTime();
-
-                productDto.setPublishedAt(createdAt);
-                productDto.setUpdatedAt(modifiedAt);
+                productDto.setPublishedAt(LocalDateTime.now());
+                productDto.setUpdatedAt(LocalDateTime.now());
 
             } else {
                 throw new IllegalArgumentException("Unsupported platform: " + platform);
