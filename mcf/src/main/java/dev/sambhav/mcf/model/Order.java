@@ -20,6 +20,9 @@ public class Order {
     @Column(name = "seller_id")
     private Long sellerId;
 
+    @Column(name="order_name")
+    private String orderName;
+
     @Column(name = "amazon_mcf_order_id")
     private String amazonMcfOrderId;
 

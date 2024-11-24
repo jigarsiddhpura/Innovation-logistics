@@ -1,18 +1,14 @@
 package dev.sambhav.mcf.service;
 
 import dev.sambhav.mcf.Mapper.WebhookMapper;
-import dev.sambhav.mcf.dto.OrderDto;
+import dev.sambhav.mcf.dto.OrderDTO;
 import dev.sambhav.mcf.dto.ProductDTO;
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
-import java.nio.charset.StandardCharsets;
 import java.util.Base64;
-
-import java.security.MessageDigest;
 
 @Service
 public class WebhookService {
@@ -78,6 +74,88 @@ public class WebhookService {
     public void processProductCreateDukaan(String payload, String platform) {
         ProductDTO productDto = webhookMapper.mapToProductDto(payload,platform);
         productService.saveProduct(productDto);
+    }
+
+    public void processOrderCreateShopify(String payload, String platform) {
+        OrderDTO orderDto = webhookMapper.mapToOrderDto(payload, platform);
+        orderService.saveOrder(orderDto);
+    }
+
+    public void processOrderCreateDukaan(String payload, String platform) {
+        OrderDTO orderDto = webhookMapper.mapToOrderDto(payload, platform);
+        orderService.saveOrder(orderDto);
+    }
+
+    public void processProductUpdateShopify(String payload, String platform) {
+        // Logic to process Shopify product update
+        ProductDTO productDto = webhookMapper.mapToProductDto(payload, platform);
+        productService.updateProduct(productDto);
+    }
+
+    public void processProductUpdateDukaan(String payload, String platform) {
+        // Logic to process Dukaan product update
+        ProductDTO productDto = webhookMapper.mapToProductDto(payload, platform);
+        productService.updateProduct(productDto);
+    }
+
+    public Long processProductDeleteShopify(String payload, String platform) {
+        // Logic to process Shopify product deletion
+        Long productId = webhookMapper.mapToProductId(payload);
+        productService.deleteProductById(productId);
+        return productId;
+    }
+
+    public Long processProductDeleteDukaan(String payload, String platform) {
+        // Logic to process Dukaan product deletion
+        Long productId = webhookMapper.mapToProductId(payload);
+        productService.deleteProductById(productId);
+        return productId;
+    }
+
+    public void processOrderUpdated(String payload, String platform) {
+        if ("shopify".equals(platform)) {
+            processOrderUpdatedShopify(payload);
+        } else if ("dukaan".equals(platform)) {
+            processOrderUpdatedDukaan(payload);
+        } else {
+            throw new IllegalArgumentException("Unsupported platform: " + platform);
+        }
+    }
+
+    public void processOrderUpdatedShopify(String payload) {
+        // Logic to process Shopify order update
+        OrderDTO orderDto = webhookMapper.mapToOrderDto(payload, "shopify");
+        orderService.updateOrder(orderDto);
+    }
+
+    public void processOrderUpdatedDukaan(String payload) {
+        // Logic to process Dukaan order update
+        OrderDTO orderDto = webhookMapper.mapToOrderDto(payload, "dukaan");
+        orderService.updateOrder(orderDto);
+    }
+
+    public Long processOrderDeleted(String payload, String platform) {
+        if ("shopify".equals(platform)) {
+            return processOrderDeletedShopify(payload);
+        } else if ("dukaan".equals(platform)) {
+            return processOrderDeletedDukaan(payload);
+        } else {
+            throw new IllegalArgumentException("Unsupported platform: " + platform);
+        }
+    }
+
+    public Long processOrderDeletedShopify(String payload) {
+        // Logic to process Shopify order deletion
+        Long orderId = webhookMapper.mapToOrderId(payload);
+        orderService.deleteOrder(orderId);
+        return orderId;
+    }
+
+    public Long processOrderDeletedDukaan(String payload) {
+        // Logic to process Dukaan order deletion
+        Long orderId = webhookMapper.mapToOrderId(payload);
+        orderService.deleteOrder(orderId);
+        return orderId;
     }
 
 //    @Transactional

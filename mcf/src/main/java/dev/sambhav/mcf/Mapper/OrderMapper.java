@@ -55,6 +55,8 @@ public class OrderMapper {
     public static AllOrdersDTO getAllOrders(Order order) {
         return new AllOrdersDTO(
                 order.getOrderId(),
+                order.getEmail(),
+                order.getOrderName(),
                 order.getFulfillmentStatus().name(),
                 order.getCurrentTotalPrice()
         );

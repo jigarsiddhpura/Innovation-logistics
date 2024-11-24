@@ -2,20 +2,21 @@ package dev.sambhav.mcf.Mapper;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dev.sambhav.mcf.dto.OrderDto;
+import dev.sambhav.mcf.dto.OrderDTO;
 import dev.sambhav.mcf.dto.ProductDTO;
 import dev.sambhav.mcf.model.OrderStatus;
 import jakarta.servlet.http.HttpSession;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
-import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
+@Slf4j
 @Component
 public class WebhookMapper {
 
@@ -78,28 +79,50 @@ public class WebhookMapper {
         }
     }
 
-    public OrderDto mapToOrderDto(String payload) {
+    public OrderDTO mapToOrderDto(String payload, String platform) {
         try {
             JsonNode rootNode = objectMapper.readTree(payload);
+            DateTimeFormatter formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
 
+            OrderDTO orderDto = new OrderDTO();
 
-            OrderDto orderDto = new OrderDto();
-            orderDto.setOrderId(rootNode.path("id").asLong());
-            orderDto.setSellerId(3L);
-            orderDto.setCustomerName(rootNode.path("customer").path("first_name").asText()
-                    + " " + rootNode.path("customer").path("last_name").asText());
-            orderDto.setEmail(rootNode.path("email").asText());
-            orderDto.setCurrentTotalPrice(new BigDecimal(rootNode.path("current_total_price").asText()));
-            orderDto.setFulfillmentStatus(OrderStatus.PENDING);
-            orderDto.setCreatedAt(OffsetDateTime.parse(rootNode.path("created_at").asText()).toLocalDateTime());
-            orderDto.setProcessedAt(OffsetDateTime.parse(rootNode.path("processed_at").asText()).toLocalDateTime());
+            if ("shopify".equalsIgnoreCase(platform)) {
+                orderDto.setOrderId(rootNode.path("id").asLong());
+                orderDto.setSellerId(1L);
+                orderDto.setOrderName(rootNode.path("line_items").get(0).path("name").asText());
+                log.info(rootNode.path("line_items").get(0).path("name").asText());
+                orderDto.setAmazonMcfOrderId(rootNode.path("amazon_mcf_order_id").asText());
+                orderDto.setCustomerName(rootNode.path("customer").path("first_name").asText());
+                orderDto.setEmail(rootNode.path("customer").path("email").asText());
+                orderDto.setCurrentTotalPrice(new BigDecimal(rootNode.path("total_price").asText()));
+                orderDto.setFulfillmentStatus(OrderStatus.PENDING);
+                orderDto.setSlaMet(rootNode.path("sla_met").asBoolean());
+                orderDto.setDeliveryEta(LocalDateTime.now());
+                orderDto.setCreatedAt(LocalDateTime.now());
+                orderDto.setProcessedAt(LocalDateTime.now());
+            } else if ("dukaan".equalsIgnoreCase(platform)) {
+                orderDto.setOrderId(rootNode.path("uuid").asLong());
+                orderDto.setSellerId(1L);
+                orderDto.setAmazonMcfOrderId(null);
+//                orderDto.setOrderName(rootNode.path("line_items").get(0).path("title").asText());
+//                log.info(rootNode.path("line_items").get(0).path("name").asText());// Dukaan payload likely lacks this
+                orderDto.setCustomerName(rootNode.path("customer_name").asText());
+                orderDto.setEmail(rootNode.path("email").asText());
+                orderDto.setCurrentTotalPrice(new BigDecimal(rootNode.path("total_price").asDouble()));
+                orderDto.setFulfillmentStatus(OrderStatus.PENDING); // Default to pending for Dukaan
+                orderDto.setSlaMet(false); // Assuming SLA Met not available in Dukaan payload
+                orderDto.setDeliveryEta(LocalDateTime.now()); // Dukaan payload may lack this field
+                orderDto.setCreatedAt(LocalDateTime.now());
+                orderDto.setProcessedAt(LocalDateTime.now());
+            } else {
+                throw new IllegalArgumentException("Unsupported platform: " + platform);
+            }
 
             return orderDto;
         } catch (Exception e) {
             throw new RuntimeException("Error mapping payload to OrderDto", e);
         }
     }
-
     public Long mapToOrderId(String payload) {
         try {
             JsonNode rootNode = objectMapper.readTree(payload);

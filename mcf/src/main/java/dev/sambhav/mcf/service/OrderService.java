@@ -1,26 +1,18 @@
 package dev.sambhav.mcf.service;
 
-import dev.sambhav.mcf.dto.OrderDto;
-import dev.sambhav.mcf.dto.OrderStatusDTO;
+import dev.sambhav.mcf.dto.OrderDTO;
 import dev.sambhav.mcf.dto.SellerResponseDTO;
 import dev.sambhav.mcf.dto.TrackingStatusDTO;
 import dev.sambhav.mcf.model.Order;
 import dev.sambhav.mcf.model.OrderStatus;
-import dev.sambhav.mcf.model.Product;
-import dev.sambhav.mcf.model.Seller;
 import dev.sambhav.mcf.repository.OrderRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import jakarta.transaction.Transactional;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -177,16 +169,16 @@ public class OrderService {
 
 
     @Transactional
-    public void saveOrder(OrderDto orderDto) {
+    public void saveOrder(OrderDTO orderDto) {
         Order order = mapToEntity(orderDto);
         orderRepository.save(order);
     }
 
     @Transactional
-    public void updateOrder(OrderDto orderDto) {
+    public void updateOrder(OrderDTO orderDto) {
         Order order = orderRepository.findById(orderDto.getOrderId())
                 .orElseThrow(() -> new EntityNotFoundException("Order not found with ID: " + orderDto.getOrderId()));
-
+        order.setOrderName(order.getOrderName());
         order.setCustomerName(orderDto.getCustomerName());
         order.setEmail(orderDto.getEmail());
         order.setCurrentTotalPrice(orderDto.getCurrentTotalPrice());
@@ -204,16 +196,21 @@ public class OrderService {
         orderRepository.deleteById(orderId);
     }
 
-    private Order mapToEntity(OrderDto orderDto) {
+    private Order mapToEntity(OrderDTO orderDto) {
         Order order = new Order();
         order.setOrderId(orderDto.getOrderId());
         order.setSellerId(orderDto.getSellerId());
+        order.setOrderName(orderDto.getOrderName());
+        order.setAmazonMcfOrderId(orderDto.getAmazonMcfOrderId());
         order.setCustomerName(orderDto.getCustomerName());
         order.setEmail(orderDto.getEmail());
         order.setCurrentTotalPrice(orderDto.getCurrentTotalPrice());
         order.setFulfillmentStatus(orderDto.getFulfillmentStatus());
+        order.setSlaMet(orderDto.getSlaMet());
+        order.setDeliveryEta(orderDto.getDeliveryEta());
         order.setCreatedAt(orderDto.getCreatedAt());
         order.setProcessedAt(orderDto.getProcessedAt());
+
         return order;
     }
 }

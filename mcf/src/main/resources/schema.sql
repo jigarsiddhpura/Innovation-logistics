@@ -47,6 +47,7 @@ CREATE TABLE IF NOT EXISTS products (
 CREATE TABLE IF NOT EXISTS orders  (
     order_id BIGINT PRIMARY KEY,
     seller_id INT REFERENCES seller(seller_id),
+    order_name VARCHAR(255),
     amazon_mcf_order_id VARCHAR(255),
     customer_name VARCHAR(255),
     email VARCHAR(255),
@@ -84,4 +85,5 @@ CREATE TABLE IF NOT EXISTS forecasts  (
     notes TEXT,
     created_at TIMESTAMP DEFAULT NOW()
 );
+
 
