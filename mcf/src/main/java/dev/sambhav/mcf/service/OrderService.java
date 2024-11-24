@@ -1,7 +1,9 @@
 package dev.sambhav.mcf.service;
 
 import dev.sambhav.mcf.dto.OrderDto;
+import dev.sambhav.mcf.dto.OrderStatusDTO;
 import dev.sambhav.mcf.dto.SellerResponseDTO;
+import dev.sambhav.mcf.dto.TrackingStatusDTO;
 import dev.sambhav.mcf.model.Order;
 import dev.sambhav.mcf.model.OrderStatus;
 import dev.sambhav.mcf.model.Product;
@@ -20,6 +22,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -48,8 +51,67 @@ public class OrderService {
         return orderRepository.findAll(); // Fetch all orders
     }
 
-    public OrderStatus track(Long orderId) {
-        return orderRepository.getOrderStatus(orderId); // Delegate repository logic
+    public TrackingStatusDTO track(Long orderId) {
+        Order order = orderRepository.findById(orderId)
+            .orElseThrow(() -> new EntityNotFoundException("Order not found: " + orderId));
+            
+        TrackingStatusDTO tracking = new TrackingStatusDTO();
+        tracking.setCurrentStatus(formatStatus(order.getFulfillmentStatus()));
+        
+        // Calculate milestone dates
+        LocalDateTime shippedDate = order.getCreatedAt();
+        LocalDateTime outForDeliveryDate = shippedDate.plusDays(1);
+        LocalDateTime estimatedDeliveryDate = shippedDate.plusDays(3);
+        
+        OrderStatus currentStatus = order.getFulfillmentStatus();
+        
+        List<TrackingStatusDTO.TrackingMilestone> milestones = new ArrayList<>();
+        
+        // Shipped milestone
+        TrackingStatusDTO.TrackingMilestone shipped = new TrackingStatusDTO.TrackingMilestone();
+        shipped.setStatus("Shipped");
+        shipped.setDate(shippedDate);
+        shipped.setCompleted(isStatusCompleted(shippedDate));
+        shipped.setDisplayText("Shipped");
+        milestones.add(shipped);
+        
+        // Out for delivery milestone
+        TrackingStatusDTO.TrackingMilestone outForDelivery = new TrackingStatusDTO.TrackingMilestone();
+        outForDelivery.setStatus("OutForDelivery");
+        outForDelivery.setDate(outForDeliveryDate);
+        outForDelivery.setCompleted(isStatusCompleted(outForDeliveryDate));
+        outForDelivery.setDisplayText("Out For Delivery");
+        milestones.add(outForDelivery);
+        
+        // MCF (Delivery) milestone
+        TrackingStatusDTO.TrackingMilestone mcf = new TrackingStatusDTO.TrackingMilestone();
+        mcf.setStatus("Delivered");
+        mcf.setDate(estimatedDeliveryDate);
+        mcf.setCompleted(isStatusCompleted(estimatedDeliveryDate));
+        mcf.setDisplayText("Expected by, " + formatDate(estimatedDeliveryDate));
+        milestones.add(mcf);
+        
+        tracking.setMilestones(milestones.toArray(new TrackingStatusDTO.TrackingMilestone[0]));
+        return tracking;
+    }
+
+    public static boolean isStatusCompleted(LocalDateTime date) {
+        return date.isBefore(LocalDateTime.now()) || date.isEqual(LocalDateTime.now());
+    }
+    
+    public static String formatStatus(OrderStatus status) {
+        return switch (status) {
+            case SHIPPED -> "Your order has been shipped";
+            case IN_PROGRESS -> "Your order is out for delivery";
+            case DELIVERED -> "Your order has been delivered";
+            case PENDING -> "Your order is being processed";
+            default -> "Order status unknown";
+        };
+    }
+
+    public static String formatDate(LocalDateTime date) {
+        // Format: "Mon 15th"
+        return date.format(DateTimeFormatter.ofPattern("EEE dd'th'"));
     }
 
     @Transactional

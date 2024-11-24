@@ -5,6 +5,7 @@ import dev.sambhav.mcf.dto.AllOrdersDTO;
 import dev.sambhav.mcf.dto.OrderRequestDTO;
 import dev.sambhav.mcf.dto.OrderResponseDTO;
 import dev.sambhav.mcf.dto.OrderStatusDTO;
+import dev.sambhav.mcf.dto.TrackingStatusDTO;
 import dev.sambhav.mcf.model.Order;
 import dev.sambhav.mcf.model.OrderStatus;
 import dev.sambhav.mcf.service.OrderService;
@@ -45,9 +46,11 @@ public class OrderController {
     }
 
     @GetMapping("/orders/{orderId}/track")
-    public ResponseEntity<OrderStatusDTO> trackOrder(@PathVariable Long orderId) {
-        OrderStatus status = orderService.track(orderId);
-        OrderStatusDTO statusDTO = OrderMapper.toOrderStatusDTO(status);
-        return ResponseEntity.ok(statusDTO);
+    public ResponseEntity<TrackingStatusDTO> trackOrder(@PathVariable Long orderId) {
+        // OrderStatus status = orderService.track(orderId);
+        // OrderStatusDTO statusDTO = OrderMapper.toOrderStatusDTO(status);
+        // return ResponseEntity.ok(statusDTO);
+        TrackingStatusDTO trackingInfo = orderService.track(orderId);
+        return ResponseEntity.ok(trackingInfo);
     }
 }
