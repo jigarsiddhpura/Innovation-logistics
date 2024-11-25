@@ -72,8 +72,6 @@ public class WebhookController {
         }
     }
 
-
-
     @PostMapping("/order-create")
     public ResponseEntity<WebhookResponseDTO> handleOrderCreated(
             @RequestBody String payload,
@@ -105,154 +103,47 @@ public class WebhookController {
         }
     }
 
-//     Webhook for product update
-@PostMapping("/product-updated")
-public ResponseEntity<WebhookResponseDTO> handleProductUpdated(
-        @RequestBody String payload,
-        @RequestHeader(value = "X-Shopify-Hmac-Sha256", required = false) String shopifyHmacHeader) {
+    //     Webhook for product update
+    @PostMapping("/product-updated")
+    public ResponseEntity<WebhookResponseDTO> handleProductUpdated(
+            @RequestBody String payload,
+            @RequestHeader(value = "X-Shopify-Hmac-Sha256", required = false) String shopifyHmacHeader) {
 
-    try {
-        String platform;
+        try {
+            String platform;
 
-        // Determine the platform based on the Shopify header
-        if (shopifyHmacHeader != null) {
-            platform = "shopify";
+            // Determine the platform based on the Shopify header
+            if (shopifyHmacHeader != null) {
+                platform = "shopify";
 
-            // Verify Shopify Webhook signature
-            if (!webhookService.verifyShopifySignature(payload, shopifyHmacHeader)) {
-                System.out.println("Invalid Shopify webhook signature");
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                        .body(new WebhookResponseDTO("Invalid Shopify webhook signature", false));
+                // Verify Shopify Webhook signature
+                if (!webhookService.verifyShopifySignature(payload, shopifyHmacHeader)) {
+                    System.out.println("Invalid Shopify webhook signature");
+                    return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                            .body(new WebhookResponseDTO("Invalid Shopify webhook signature", false));
+                }
+            } else {
+                platform = "dukaan";
             }
-        } else {
-            platform = "dukaan";
-        }
 
-        // Process product update based on the platform
-        if ("shopify".equals(platform)) {
-            webhookService.processProductUpdateShopify(payload, platform);
-        } else if ("dukaan".equals(platform)) {
-            webhookService.processProductUpdateDukaan(payload, platform);
-        }
-
-        return ResponseEntity.ok(new WebhookResponseDTO("Product updated successfully", true));
-    } catch (Exception e) {
-        e.printStackTrace();
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(new WebhookResponseDTO("Error processing webhook", false));
-    }
-}
-//
-//    // Webhook for product delete
-@PostMapping("/product-deleted")
-public ResponseEntity<WebhookResponseDTO> handleProductDeleted(
-        @RequestBody String payload,
-        @RequestHeader(value = "X-Shopify-Hmac-Sha256", required = false) String shopifyHmacHeader) {
-
-    try {
-        String platform;
-
-        // Determine the platform based on the Shopify header
-        if (shopifyHmacHeader != null) {
-            platform = "shopify";
-
-            // Verify Shopify Webhook signature
-            if (!webhookService.verifyShopifySignature(payload, shopifyHmacHeader)) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                        .body(new WebhookResponseDTO("Invalid Shopify webhook signature", false));
+            // Process product update based on the platform
+            if ("shopify".equals(platform)) {
+                webhookService.processProductUpdateShopify(payload, platform);
+            } else if ("dukaan".equals(platform)) {
+                webhookService.processProductUpdateDukaan(payload, platform);
             }
-        } else {
-            platform = "dukaan";
-        }
 
-        // Process product deletion based on the platform
-        Long productId;
-        if ("shopify".equals(platform)) {
-            productId = webhookService.processProductDeleteShopify(payload, platform);
-        } else if ("dukaan".equals(platform)) {
-            productId = webhookService.processProductDeleteDukaan(payload, platform);
-        } else {
-            throw new IllegalArgumentException("Unsupported platform: " + platform);
+            return ResponseEntity.ok(new WebhookResponseDTO("Product updated successfully", true));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new WebhookResponseDTO("Error processing webhook", false));
         }
-
-        return ResponseEntity.ok(new WebhookResponseDTO("Product deleted successfully: ID " + productId, true));
-    } catch (Exception e) {
-        e.printStackTrace();
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(new WebhookResponseDTO("Error processing webhook", false));
     }
-}
-
-    // Webhook for order updates
-@PostMapping("/order-updated")
-public ResponseEntity<WebhookResponseDTO> handleOrderUpdated(
-        @RequestBody String payload,
-        @RequestHeader(value = "X-Shopify-Hmac-Sha256", required = false) String shopifyHmacHeader) {
-
-    try {
-        String platform;
-
-        // Determine the platform based on the Shopify header
-        if (shopifyHmacHeader != null) {
-            platform = "shopify";
-
-            // Verify Shopify Webhook signature
-            if (!webhookService.verifyShopifySignature(payload, shopifyHmacHeader)) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                        .body(new WebhookResponseDTO("Invalid Shopify webhook signature", false));
-            }
-        } else {
-            platform = "dukaan";
-        }
-
-        // Process order update based on the platform
-        webhookService.processOrderUpdated(payload, platform);
-
-        return ResponseEntity.ok(new WebhookResponseDTO("Order updated successfully", true));
-
-    } catch (Exception e) {
-        e.printStackTrace();
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(new WebhookResponseDTO("Error processing webhook", false));
-    }
-}
-//
-//    // Webhook for order deletion
-@PostMapping("/order-deleted")
-public ResponseEntity<WebhookResponseDTO> handleOrderDeleted(
-        @RequestBody String payload,
-        @RequestHeader(value = "X-Shopify-Hmac-Sha256", required = false) String shopifyHmacHeader) {
-
-    try {
-        String platform;
-
-        // Determine the platform based on the Shopify header
-        if (shopifyHmacHeader != null) {
-            platform = "shopify";
-
-            // Verify Shopify Webhook signature
-            if (!webhookService.verifyShopifySignature(payload, shopifyHmacHeader)) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                        .body(new WebhookResponseDTO("Invalid Shopify webhook signature", false));
-            }
-        } else {
-            platform = "dukaan";
-        }
-
-        // Process order deletion based on the platform
-        Long deletedOrderId = webhookService.processOrderDeleted(payload, platform);
-
-        return ResponseEntity.ok(new WebhookResponseDTO("Order deleted successfully: ID " + deletedOrderId, true));
-
-    } catch (Exception e) {
-        e.printStackTrace();
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(new WebhookResponseDTO("Error processing webhook", false));
-    }
-}
-
-    @PostMapping("/order-status-update")
-    public ResponseEntity<WebhookResponseDTO> receiveStatusUpdate(
+    //
+    //    // Webhook for product delete
+    @PostMapping("/product-deleted")
+    public ResponseEntity<WebhookResponseDTO> handleProductDeleted(
             @RequestBody String payload,
             @RequestHeader(value = "X-Shopify-Hmac-Sha256", required = false) String shopifyHmacHeader) {
 
@@ -272,9 +163,48 @@ public ResponseEntity<WebhookResponseDTO> handleOrderDeleted(
                 platform = "dukaan";
             }
 
-//            // Process order update based on the platform
-//            webhookService.processOrderUpdated(payload, platform);
-            log.info(payload);
+            // Process product deletion based on the platform
+            Long productId;
+            if ("shopify".equals(platform)) {
+                productId = webhookService.processProductDeleteShopify(payload, platform);
+            } else if ("dukaan".equals(platform)) {
+                productId = webhookService.processProductDeleteDukaan(payload, platform);
+            } else {
+                throw new IllegalArgumentException("Unsupported platform: " + platform);
+            }
+
+            return ResponseEntity.ok(new WebhookResponseDTO("Product deleted successfully: ID " + productId, true));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new WebhookResponseDTO("Error processing webhook", false));
+        }
+    }
+
+        // Webhook for order updates
+    @PostMapping("/order-updated")
+    public ResponseEntity<WebhookResponseDTO> handleOrderUpdated(
+            @RequestBody String payload,
+            @RequestHeader(value = "X-Shopify-Hmac-Sha256", required = false) String shopifyHmacHeader) {
+
+        try {
+            String platform;
+
+            // Determine the platform based on the Shopify header
+            if (shopifyHmacHeader != null) {
+                platform = "shopify";
+
+                // Verify Shopify Webhook signature
+                if (!webhookService.verifyShopifySignature(payload, shopifyHmacHeader)) {
+                    return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                            .body(new WebhookResponseDTO("Invalid Shopify webhook signature", false));
+                }
+            } else {
+                platform = "dukaan";
+            }
+
+            // Process order update based on the platform
+            webhookService.processOrderUpdated(payload, platform);
 
             return ResponseEntity.ok(new WebhookResponseDTO("Order updated successfully", true));
 
@@ -284,5 +214,39 @@ public ResponseEntity<WebhookResponseDTO> handleOrderDeleted(
                     .body(new WebhookResponseDTO("Error processing webhook", false));
         }
     }
+    //
+    //    // Webhook for order deletion
+    @PostMapping("/order-deleted")
+    public ResponseEntity<WebhookResponseDTO> handleOrderDeleted(
+            @RequestBody String payload,
+            @RequestHeader(value = "X-Shopify-Hmac-Sha256", required = false) String shopifyHmacHeader) {
 
-}
+        try {
+            String platform;
+
+            // Determine the platform based on the Shopify header
+            if (shopifyHmacHeader != null) {
+                platform = "shopify";
+
+                // Verify Shopify Webhook signature
+                if (!webhookService.verifyShopifySignature(payload, shopifyHmacHeader)) {
+                    return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                            .body(new WebhookResponseDTO("Invalid Shopify webhook signature", false));
+                }
+            } else {
+                platform = "dukaan";
+            }
+
+            // Process order deletion based on the platform
+            Long deletedOrderId = webhookService.processOrderDeleted(payload, platform);
+
+            return ResponseEntity.ok(new WebhookResponseDTO("Order deleted successfully: ID " + deletedOrderId, true));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new WebhookResponseDTO("Error processing webhook", false));
+        }
+    }
+
+    }
