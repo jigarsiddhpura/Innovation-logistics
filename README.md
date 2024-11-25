@@ -1,9 +1,13 @@
-# Overview
-
+## ☀️ Overview
 
 This repository contains a **demand forecasting platform** built using **FastAPI**, integrating a variety of tools like **LLM Models**, **AWS services (S3, Glue, SageMaker)**, and **PostgreSQL** for dynamic forecasting and data handling. The platform supports functionalities such as SQL query handling, inventory forecasting, and help-based assistance through AI-powered endpoints. The backend is modularized for scalability, with utilities for data ingestion, ETL jobs, and model training.
 
-## Steps to Run the Application
+## 📐Architecture
+
+![WhatsApp Image 2024-11-25 at 22 26 48_f3f1660f](https://github.com/user-attachments/assets/6a3687b1-5741-48e0-9ccb-e1dddaa85b8a)
+
+
+## 🚀 Steps to Run the Application
 
 ### Prerequisites
 - Python 3.8 or higher
@@ -46,7 +50,7 @@ This repository contains a **demand forecasting platform** built using **FastAPI
 
 3. Optionally, you can test endpoints using tools like **Postman** or the FastAPI Swagger UI at `http://127.0.0.1:8000/docs`.
 
-## Tech Stack
+## ⚙️ Tech Stack
 
 ### Backend Framework
 - **FastAPI**: Core web framework for creating APIs and handling requests.
