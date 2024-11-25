@@ -1,24 +1,99 @@
-# amazon-sambhav
+# 📦 Amazon MCF Integration Plugin - Backend Services 
 
-### To clean & rebuild the project in case of dependency collision (TODO: CLEAN CACHE COMPLETELY)
+A comprehensive no-code platform designed to simplify e-commerce operations for small and medium-sized businesses (SMBs) through seamless Amazon MCF integration.
+
+## 📑 Table of Contents
+- [Introduction](#introduction)
+- [Prerequisites](#prerequisites)
+- [Project Structure](#project-structure)
+- [Setting Up the Environment](#setting-up-the-environment)
+- [Running the Backend Services](#running-the-backend-services)
+- [Services Overview](#services-overview)
+- [Overview for Voice Agent ( Grievance Assistance)](#overview-for-voice-agent)
+
+## 🌟 Introduction
+This project implements a backend system for seamless integration between Amazon Multichannel Fulfillment and Shopify, enabling streamlined order processing, tracking, and inventory management.
+
+- Onbording Service
+- Forecasting Service
+- Customer Service
+- Tracking Service
+
+## 📋 Prerequisites
+
+Ensure you have the following installed:
+
+- **Java** 17 or later
+- **Maven** 3.6+
+- **PostgreSQL** Database
+
+## 📁 Project Structure
 
 ```bash
-mvn clean
-mvn dependency:purge-local-repository
-mvn install
+mcf-shopify-integration/
+├── java/dev/sambhav/mcf/
+│   ├── client/
+│   ├── config/
+│   ├── controller/
+│   ├── dto/
+│   ├── mapper/
+│   ├── model/
+│   ├── repository/
+│   ├── service/
+│   └── utils/
+│   └── McfApplication.java
+├── .mvn/
+├── .vscode/
+├── src/
+└── pom.xml
 ```
 
+## 🛠 Setting Up the Environment
 
-## Overview for Voice Agent ( Grievance Assistance)
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/jigarssiddhpura/Innovation-logistics.git
+cd backend
+```
+
+### 2. Configure Environment Variables
+Create an application.properties or application.yml file with the following configuration:
+
+```bash
+spring:
+    datasource:
+        username: ${DB_USERNAME}
+        password: ${DB_PASSWORD}
+        url: ${DB_URL}
+```
+> ⚠️ **Important**: Do not commit sensitive information `application-prod.yml` file to version control!
+
+
+## 🔧 Services Overview 
+
+### 1. Onboarding Service
+- **Features**: Fare calculation, surge pricing, payment records
+
+### 2. Forecasting Service
+- **Features**: Inventory demand prediction, sales trend analysis, inventory optimization recommendations
+
+### 3. Customer Service
+- **Features**: Customer interaction tracking, support ticket management, customer feedback processing
+
+### 4.  Tracking Service
+- **Features**: Order status monitoring, shipment tracking integration, real-time status updates
+
+## 🤖 Overview for Voice Agent ( Grievance Assistance)
 
 This repository provides a **Grievance Call Management System** for **Shopify Sellers** using **Bland AI** for automated call handling and **MongoDB** for call data storage. The application includes endpoints to initiate grievance calls and retrieve call details, along with priority analysis
 
-## Features
+## 🚀 Features
 1. **Grievance Call Requests**: Sellers can initiate grievance calls handled by Bland AI.
 2. **Call Details Retrieval**: Fetch detailed information about a specific call, including priority scoring based on call summaries.
 3. **MongoDB Integration**: Stores call data, including metadata and analysis, for future reference.
 
-## Steps to Run the voice-agent
+## ✅ Steps to Run the voice-agent
 
 ### Prerequisites
 - Python 3.8 or higher.
@@ -100,7 +175,7 @@ This repository provides a **Grievance Call Management System** for **Shopify Se
   }
   ```
 
-## Tech Stack
+## ⚙️ Tech Stack
 
 ### Backend Framework
 - **Flask**: For building RESTful APIs.
