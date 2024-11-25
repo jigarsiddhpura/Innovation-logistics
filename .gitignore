@@ -1,2 +1,4 @@
 sambhavenv/
 __pycache__/
+.env
+
