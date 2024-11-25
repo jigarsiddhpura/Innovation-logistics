@@ -16,7 +16,8 @@ Tech Titans has developed a versatile tool that addresses key challenges SMBs fa
 
 ## 📐 Architecture
 
-![WhatsApp Image 2024-11-25 at 20 19 51_0457b743](https://github.com/user-attachments/assets/56350fd0-bc89-4d88-9eeb-3121294fec8b)
+![WhatsApp Image 2024-11-25 at 22 19 21_16f73195](https://github.com/user-attachments/assets/e16fa2ad-eafd-48a1-9097-9e4a78fa57f3)
+
 
 ## ✨ Key Features
 - **Chrome Extension for Shopify & Dukaan**: In-context metadata and fulfillment insights
@@ -72,6 +73,9 @@ git checkout web
 
 # For backend development
 git checkout backend
+
+# For ML development
+git checkout ml
 ```
 
 ## 📘 Documentation
@@ -87,7 +91,7 @@ Key frontend features:
 - Responsive design with Tailwind CSS
 
 ### Backend Services (backend branch)
-The backend consists of multiple microservices built with Go. For detailed setup and running instructions, please switch to the `backend` branch and refer to its README.
+The backend consists of multiple microservices built with Spring Boot. For detailed setup and running instructions, please switch to the `backend` branch and refer to its README.
 
 
 
