@@ -3,10 +3,7 @@ package dev.sambhav.mcf.Mapper;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-import dev.sambhav.mcf.dto.AllOrdersDTO;
-import dev.sambhav.mcf.dto.OrderRequestDTO;
-import dev.sambhav.mcf.dto.OrderResponseDTO;
-import dev.sambhav.mcf.dto.OrderStatusDTO;
+import dev.sambhav.mcf.dto.*;
 import dev.sambhav.mcf.model.Order;
 import dev.sambhav.mcf.model.OrderStatus;
 import lombok.Data;
@@ -52,15 +49,24 @@ public class OrderMapper {
         return responseDTO;
     }
 
-    public static AllOrdersDTO getAllOrders(Order order) {
-        return new AllOrdersDTO(
-                order.getOrderId(),
-                order.getEmail(),
-                order.getOrderName(),
-                order.getFulfillmentStatus().name(),
-                order.getCurrentTotalPrice()
-        );
-    }
+//    public static OrderDTO getAllOrders(Order order) {
+//        return new AllOrdersDTO(
+//                order.getOrderId(),
+//                order.getSellerId(),
+//                order.getOrderName(),
+//                order.getAmazonMcfOrderId(),
+//                order.getCustomerName(),
+//                order.getEmail(),
+//                order.getCurrentTotalPrice(),
+//                order.getFulfillmentStatus(),
+//                order.getSlaMet(),
+//                order.getDeliveryEta(),
+//                order.getCreatedAt(),
+//                order.getProcessedAt(),
+//                order.getCurrentTotalPrice()
+//
+//        );
+//    }
 
     public static OrderStatusDTO toOrderStatusDTO(OrderStatus status) {
         String message = generateStatusMessage(status); // Optional message generator

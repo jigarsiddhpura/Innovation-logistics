@@ -1,13 +1,20 @@
 // File: src/main/java/dev/sambhav/mcf/dto/ProductRequestDTO.java
 package dev.sambhav.mcf.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class ProductRequestDTO {
+    private Long productId;
     private Long sellerId;
     private String shopifyProductId;
     private String amazonMcfSku;
@@ -21,4 +28,12 @@ public class ProductRequestDTO {
     private Integer reorderThreshold;
     private Timestamp publishedAt;
     private Timestamp updatedAt;
+
+    public Long getProductId() {
+        return productId;
+    }
+
+    public void setProductId(Long productId) {
+        this.productId = productId;
+    }
 }

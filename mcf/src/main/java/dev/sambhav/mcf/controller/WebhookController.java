@@ -56,7 +56,6 @@ public class WebhookController {
                 platform = "shopify";
             }
 //
-            log.info(payload);
             // Process payload based on platform
             if ("shopify".equals(platform)) {
                 webhookService.processProductCreateShopify(payload, platform);
@@ -90,8 +89,6 @@ public class WebhookController {
             } else {
                 platform = "shopify";
             }
-
-            log.info(payload);
 
             // Process payload based on platform
             if ("shopify".equals(platform)) {
@@ -253,5 +250,39 @@ public ResponseEntity<WebhookResponseDTO> handleOrderDeleted(
                 .body(new WebhookResponseDTO("Error processing webhook", false));
     }
 }
+
+    @PostMapping("/order-status-update")
+    public ResponseEntity<WebhookResponseDTO> receiveStatusUpdate(
+            @RequestBody String payload,
+            @RequestHeader(value = "X-Shopify-Hmac-Sha256", required = false) String shopifyHmacHeader) {
+
+        try {
+            String platform;
+
+            // Determine the platform based on the Shopify header
+            if (shopifyHmacHeader != null) {
+                platform = "shopify";
+
+                // Verify Shopify Webhook signature
+                if (!webhookService.verifyShopifySignature(payload, shopifyHmacHeader)) {
+                    return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                            .body(new WebhookResponseDTO("Invalid Shopify webhook signature", false));
+                }
+            } else {
+                platform = "dukaan";
+            }
+
+//            // Process order update based on the platform
+//            webhookService.processOrderUpdated(payload, platform);
+            log.info(payload);
+
+            return ResponseEntity.ok(new WebhookResponseDTO("Order updated successfully", true));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new WebhookResponseDTO("Error processing webhook", false));
+        }
+    }
 
 }

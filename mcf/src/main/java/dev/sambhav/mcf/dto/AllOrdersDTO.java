@@ -1,16 +1,25 @@
 package dev.sambhav.mcf.dto;
 
+import dev.sambhav.mcf.model.OrderStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
 public class AllOrdersDTO {
     private Long orderId;
-    private String email;
+    private Long sellerId;
     private String orderName;
-    private String status; // Enum as String
-    private BigDecimal totalPrice;
+    private String amazonMcfOrderId;
+    private String customerName;
+    private String email;
+    private BigDecimal currentTotalPrice;
+    private OrderStatus fulfillmentStatus;
+    private Boolean slaMet;
+    private LocalDateTime deliveryEta;
+    private LocalDateTime createdAt;
+    private LocalDateTime processedAt;
 }

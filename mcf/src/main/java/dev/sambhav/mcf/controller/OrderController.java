@@ -1,15 +1,13 @@
 package dev.sambhav.mcf.controller;
 
 import dev.sambhav.mcf.Mapper.OrderMapper;
-import dev.sambhav.mcf.dto.AllOrdersDTO;
-import dev.sambhav.mcf.dto.OrderRequestDTO;
-import dev.sambhav.mcf.dto.OrderResponseDTO;
-import dev.sambhav.mcf.dto.OrderStatusDTO;
-import dev.sambhav.mcf.dto.TrackingStatusDTO;
+import dev.sambhav.mcf.dto.*;
 import dev.sambhav.mcf.model.Order;
 import dev.sambhav.mcf.model.OrderStatus;
+import dev.sambhav.mcf.service.ApiResponse;
 import dev.sambhav.mcf.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,7 +28,7 @@ public class OrderController {
         return ResponseEntity.ok(OrderMapper.toResponseDTO(createdOrder));
     }
 
-    @PutMapping("orders/{orderId}/fulfill")
+    @PutMapping("orders/fulfill/{orderId}")
     public ResponseEntity<OrderResponseDTO> fulfillOrder(@PathVariable Long orderId) {
         // Modularized naming and added ResponseEntity for consistency
         Order updatedOrder = orderService.fulfillOrder(orderId);
@@ -38,19 +36,41 @@ public class OrderController {
     }
 
     @GetMapping("/orders")
-    public ResponseEntity<List<AllOrdersDTO>> getAllOrders() {
+    public ResponseEntity<List<OrderDTO>> getAllOrders() {
         // Added ResponseEntity for standardizing responses
         List<Order> orders = orderService.getAllOrders();
-        List<AllOrdersDTO> ordersDTOS=orders.stream().map(OrderMapper::getAllOrders).toList();
+        List<OrderDTO> ordersDTOS=orders.stream().map(OrderService::mapToDTO).toList();
         return ResponseEntity.ok(ordersDTOS);
     }
 
-    @GetMapping("/orders/{orderId}/track")
+    @GetMapping("/orders/track/{orderId}")
     public ResponseEntity<TrackingStatusDTO> trackOrder(@PathVariable Long orderId) {
         // OrderStatus status = orderService.track(orderId);
         // OrderStatusDTO statusDTO = OrderMapper.toOrderStatusDTO(status);
         // return ResponseEntity.ok(statusDTO);
         TrackingStatusDTO trackingInfo = orderService.track(orderId);
         return ResponseEntity.ok(trackingInfo);
+    }
+
+    @PutMapping("/{orderId}/mark-shipped")
+    public ResponseEntity<?> markOrderAsShipped(@PathVariable Long orderId) {
+        try {
+            OrderDTO updatedOrder = orderService.markOrderAsShipped(orderId);
+            return ResponseEntity.ok(new ApiResponse("Order marked as shipped", true, updatedOrder));
+        } catch (Error e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ApiResponse(e.getMessage(), false, null));
+        }
+    }
+
+    @PutMapping("/{orderId}/mark-delivered")
+    public ResponseEntity<?> markOrderAsOutForDelivery(@PathVariable Long orderId) {
+        try {
+            OrderDTO updatedOrder = orderService.markOrderDelivered(orderId);
+            return ResponseEntity.ok(new ApiResponse("Order marked as out for delivery", true, updatedOrder));
+        } catch (Error e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ApiResponse(e.getMessage(), false, null));
+        }
     }
 }

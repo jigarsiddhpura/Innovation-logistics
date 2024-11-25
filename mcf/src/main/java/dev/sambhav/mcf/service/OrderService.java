@@ -213,6 +213,62 @@ public class OrderService {
 
         return order;
     }
+
+    @Transactional
+    public OrderDTO markOrderAsShipped(Long orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new Error("Order not found with ID: " + orderId));
+
+        if (order.getFulfillmentStatus() != OrderStatus.PENDING) {
+            throw new Error(
+                    "Current status: " + order.getFulfillmentStatus());
+        }
+
+        order.setFulfillmentStatus(OrderStatus.SHIPPED);
+        order.setProcessedAt(LocalDateTime.now());
+
+        // Update delivery ETA - assuming 2 days for delivery after shipping
+        order.setDeliveryEta(LocalDateTime.now().plusDays(2));
+
+        Order savedOrder = orderRepository.save(order);
+        return mapToDTO(savedOrder);
+    }
+
+    @Transactional
+    public OrderDTO markOrderDelivered(Long orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new Error("Order not found with ID: " + orderId));
+
+        if (order.getFulfillmentStatus() != OrderStatus.SHIPPED) {
+            throw new Error(
+                    "Current status: " + order.getFulfillmentStatus());
+        }
+
+        order.setFulfillmentStatus(OrderStatus.DELIVERED);
+        order.setProcessedAt(LocalDateTime.now());
+
+        // Update delivery ETA to end of current day
+        order.setDeliveryEta(LocalDateTime.now().withHour(20).withMinute(0).withSecond(0));
+
+        Order savedOrder = orderRepository.save(order);
+        return mapToDTO(savedOrder);
+    }
+    public static OrderDTO mapToDTO(Order order) {
+        OrderDTO dto = new OrderDTO();
+        dto.setOrderId(order.getOrderId());
+        dto.setSellerId(order.getSellerId());
+        dto.setOrderName(order.getOrderName());
+        dto.setAmazonMcfOrderId(order.getAmazonMcfOrderId());
+        dto.setCustomerName(order.getCustomerName());
+        dto.setEmail(order.getEmail());
+        dto.setCurrentTotalPrice(order.getCurrentTotalPrice());
+        dto.setFulfillmentStatus(order.getFulfillmentStatus());
+        dto.setSlaMet(order.getSlaMet());
+        dto.setDeliveryEta(order.getDeliveryEta());
+        dto.setCreatedAt(order.getCreatedAt());
+        dto.setProcessedAt(order.getProcessedAt());
+        return dto;
+    }
 }
     
 
