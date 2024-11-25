@@ -9,8 +9,6 @@ mvn install
 ```
 
 
-# README.md
-
 ## Overview for Voice Agent ( Grievance Assistance)
 
 This repository provides a **Grievance Call Management System** for **Shopify Sellers** using **Bland AI** for automated call handling and **MongoDB** for call data storage. The application includes endpoints to initiate grievance calls and retrieve call details, along with priority analysis
@@ -25,7 +23,7 @@ This repository provides a **Grievance Call Management System** for **Shopify Se
 ### Prerequisites
 - Python 3.8 or higher.
 - MongoDB Atlas or a locally configured MongoDB instance.
-- Valid API keys for **Bland AI** and **OpenAI**.
+- Valid API keys for **Bland AI** and **LLM**.
 - `.env` file with required environment variables (refer to `.env.example`).
 
 ### Installation
@@ -50,7 +48,7 @@ This repository provides a **Grievance Call Management System** for **Shopify Se
    ```
 
 4. Add your environment variables to `.env`:
-   - `OPENAI_API_KEY`: OpenAI API key.
+   - `LLM_API_KEY`: LLM API key.
    - `BLANDAI_API_KEY`: Bland AI API key.
 
 ### Run the voice-agent
@@ -122,7 +120,7 @@ This repository provides a **Grievance Call Management System** for **Shopify Se
 
 2. **Call Details Retrieval**:
    - **Route**: `/call-details/<call_id>`
-   - **Description**: Fetches call details from Bland AI, including transcript summaries and calculates priority using OpenAI.
+   - **Description**: Fetches call details from Bland AI, including transcript summaries and calculates priority using LLM.
    - **Tech Stack**: Bland AI API, LLM API, MongoDB.
 
 ## Future Enhancements
