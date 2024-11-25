@@ -1,6 +1,5 @@
-# README.md
+# Overview
 
-## Overview
 
 This repository contains a **demand forecasting platform** built using **FastAPI**, integrating a variety of tools like **LLM Models**, **AWS services (S3, Glue, SageMaker)**, and **PostgreSQL** for dynamic forecasting and data handling. The platform supports functionalities such as SQL query handling, inventory forecasting, and help-based assistance through AI-powered endpoints. The backend is modularized for scalability, with utilities for data ingestion, ETL jobs, and model training.
 
