@@ -4,7 +4,7 @@ This repository contains a **demand forecasting platform** built using **FastAPI
 
 ## 📐Architecture
 
-![WhatsApp Image 2024-11-25 at 22 26 48_f3f1660f](https://github.com/user-attachments/assets/6a3687b1-5741-48e0-9ccb-e1dddaa85b8a)
+![WhatsApp Image 2024-11-25 at 22 33 00_1f258aa8](https://github.com/user-attachments/assets/0a3d9308-44f7-4bc5-b04c-3ccb730d5166)
 
 
 ## 🚀 Steps to Run the Application
