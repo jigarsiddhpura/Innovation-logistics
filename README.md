@@ -1,4 +1,4 @@
-# 🚗 Amazon Multi-Channel Fulfillment (MCF) Integration Solution
+# 📦 Amazon Multi-Channel Fulfillment (MCF) Integration Solution
 
 A comprehensive no-code platform designed to simplify e-commerce operations for small and medium-sized businesses (SMBs) through seamless Amazon MCF integration.
 
