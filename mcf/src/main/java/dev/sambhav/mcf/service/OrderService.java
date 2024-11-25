@@ -1,21 +1,26 @@
 package dev.sambhav.mcf.service;
 
-import dev.sambhav.mcf.dto.OrderDTO;
-import dev.sambhav.mcf.dto.SellerResponseDTO;
-import dev.sambhav.mcf.dto.TrackingStatusDTO;
+import dev.sambhav.mcf.dto.*;
 import dev.sambhav.mcf.model.Order;
 import dev.sambhav.mcf.model.OrderStatus;
 import dev.sambhav.mcf.repository.OrderRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
 
+import java.awt.print.Pageable;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class OrderService {
@@ -269,6 +274,7 @@ public class OrderService {
         dto.setProcessedAt(order.getProcessedAt());
         return dto;
     }
+
 }
     
 
