@@ -1,0 +1,558 @@
+{
+	"info": {
+		"_postman_id": "c544c91a-56a4-4b4d-bf1d-3691c58a5938",
+		"name": "amazon-sambhav",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "24360509",
+		"_collection_link": "https://cloudy-rocket-519933.postman.co/workspace/amazon-sambhav-workspace~6154886e-9e2b-4dbb-ab50-8824925249ff/collection/24360509-c544c91a-56a4-4b4d-bf1d-3691c58a5938?action=share&source=collection_link&creator=24360509"
+	},
+	"item": [
+		{
+			"name": "sellers",
+			"item": [
+				{
+					"name": "addSeller",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://16.16.57.107/api/sellers",
+							"protocol": "https",
+							"host": [
+								"16",
+								"16",
+								"57",
+								"107"
+							],
+							"path": [
+								"api",
+								"sellers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "sellerbyid",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://16.16.57.107/api/sellers/1",
+							"protocol": "https",
+							"host": [
+								"16",
+								"16",
+								"57",
+								"107"
+							],
+							"path": [
+								"api",
+								"sellers",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "orders",
+			"item": [
+				{
+					"name": "create-order",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "https://16.16.57.107/api/orders/create",
+							"protocol": "https",
+							"host": [
+								"16",
+								"16",
+								"57",
+								"107"
+							],
+							"path": [
+								"api",
+								"orders",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "sync existing orders",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "https://16.16.57.107/api/sync/shopify/orders?storeUrl=https://techtitansamazonsambhav.myshopify.com/",
+							"protocol": "https",
+							"host": [
+								"16",
+								"16",
+								"57",
+								"107"
+							],
+							"path": [
+								"api",
+								"sync",
+								"shopify",
+								"orders"
+							],
+							"query": [
+								{
+									"key": "storeUrl",
+									"value": "https://techtitansamazonsambhav.myshopify.com/"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getOrders",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://16.16.57.107/api/orders",
+							"protocol": "https",
+							"host": [
+								"16",
+								"16",
+								"57",
+								"107"
+							],
+							"path": [
+								"api",
+								"orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getOrdersbyparams",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://16.16.57.107/api/orders?storeUrl=https://mydukaan.io/techtitans1",
+							"protocol": "https",
+							"host": [
+								"16",
+								"16",
+								"57",
+								"107"
+							],
+							"path": [
+								"api",
+								"orders"
+							],
+							"query": [
+								{
+									"key": "storeUrl",
+									"value": "https://mydukaan.io/techtitans1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "track",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://16.16.57.107/api/orders/track/1019",
+							"protocol": "https",
+							"host": [
+								"16",
+								"16",
+								"57",
+								"107"
+							],
+							"path": [
+								"api",
+								"orders",
+								"track",
+								"1019"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "fulfil-order",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "https://16.16.57.107/api/orders/fulfil/1019",
+							"protocol": "https",
+							"host": [
+								"16",
+								"16",
+								"57",
+								"107"
+							],
+							"path": [
+								"api",
+								"orders",
+								"fulfil",
+								"1019"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "markShipped",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "https://16.16.57.107/api/1020/mark-shipped",
+							"protocol": "https",
+							"host": [
+								"16",
+								"16",
+								"57",
+								"107"
+							],
+							"path": [
+								"api",
+								"1020",
+								"mark-shipped"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "markDelivered",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "https://16.16.57.107/api/1020/mark-delivered",
+							"protocol": "https",
+							"host": [
+								"16",
+								"16",
+								"57",
+								"107"
+							],
+							"path": [
+								"api",
+								"1020",
+								"mark-delivered"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "products",
+			"item": [
+				{
+					"name": "addProduct",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "https://16.16.57.107/api/products",
+							"protocol": "https",
+							"host": [
+								"16",
+								"16",
+								"57",
+								"107"
+							],
+							"path": [
+								"api",
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "sync existing products",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "https://16.16.57.107/api/sync/shopify/products?storeUrl=https://techtitansamazonsambhav.myshopify.com/",
+							"protocol": "https",
+							"host": [
+								"16",
+								"16",
+								"57",
+								"107"
+							],
+							"path": [
+								"api",
+								"sync",
+								"shopify",
+								"products"
+							],
+							"query": [
+								{
+									"key": "storeUrl",
+									"value": "https://techtitansamazonsambhav.myshopify.com/"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getProductById",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://16.16.57.107/api/products/9880709497147",
+							"protocol": "https",
+							"host": [
+								"16",
+								"16",
+								"57",
+								"107"
+							],
+							"path": [
+								"api",
+								"products",
+								"9880709497147"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getProductByName",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://16.16.57.107/api/products/name/Blue Cap",
+							"protocol": "https",
+							"host": [
+								"16",
+								"16",
+								"57",
+								"107"
+							],
+							"path": [
+								"api",
+								"products",
+								"name",
+								"Blue Cap"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getAllProducts",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://16.16.57.107/api/products/get",
+							"protocol": "https",
+							"host": [
+								"16",
+								"16",
+								"57",
+								"107"
+							],
+							"path": [
+								"api",
+								"products",
+								"get"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getAllProductsbyParams",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://16.16.57.107/api/products/get?storeUrl=https://mydukaan.io/techtitans1",
+							"protocol": "https",
+							"host": [
+								"16",
+								"16",
+								"57",
+								"107"
+							],
+							"path": [
+								"api",
+								"products",
+								"get"
+							],
+							"query": [
+								{
+									"key": "storeUrl",
+									"value": "https://mydukaan.io/techtitans1"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "SLAMET",
+			"item": [
+				{
+					"name": "singleSLAMet",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"orderId\": 1001,\r\n    \"orderCreatedTime\": \"2024-11-25T10:00:00\",\r\n    \"currentStatus\": \"PENDING\",\r\n    \"lastUpdateTime\": \"2024-11-25T10:00:00\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://16.16.57.107/api/orders/sla/single",
+							"protocol": "https",
+							"host": [
+								"16",
+								"16",
+								"57",
+								"107"
+							],
+							"path": [
+								"api",
+								"orders",
+								"sla",
+								"single"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "batchSLAMet",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\r\n    {\r\n    \"orderId\": 1001,\r\n    \"orderCreatedTime\": \"2024-11-25T10:00:00\",\r\n    \"currentStatus\": \"PENDING\",\r\n    \"lastUpdateTime\": \"2024-11-25T10:00:00\"\r\n},\r\n\r\n{\r\n    \"orderId\": 1002,\r\n    \"orderCreatedTime\": \"2024-11-25T10:00:00\",\r\n    \"currentStatus\": \"IN_PROGRESS\",\r\n    \"lastUpdateTime\": \"2024-11-25T11:30:00\"\r\n},\r\n\r\n// Shipped Order\r\n{\r\n    \"orderId\": 1003,\r\n    \"orderCreatedTime\": \"2024-11-25T10:00:00\",\r\n    \"currentStatus\": \"SHIPPED\",\r\n    \"lastUpdateTime\": \"2024-11-25T15:45:00\"\r\n},\r\n\r\n// Delivered Order\r\n{\r\n    \"orderId\": 1004,\r\n    \"orderCreatedTime\": \"2024-11-25T10:00:00\",\r\n    \"currentStatus\": \"DELIVERED\",\r\n    \"lastUpdateTime\": \"2024-11-25T17:00:00\"\r\n},\r\n\r\n// Cancelled Order\r\n{\r\n    \"orderId\": 1005,\r\n    \"orderCreatedTime\": \"2024-11-25T10:00:00\",\r\n    \"currentStatus\": \"CANCELLED\",\r\n    \"lastUpdateTime\": \"2024-11-25T12:15:00\"\r\n}\r\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://16.16.57.107/api/orders/sla/batch",
+							"protocol": "https",
+							"host": [
+								"16",
+								"16",
+								"57",
+								"107"
+							],
+							"path": [
+								"api",
+								"orders",
+								"sla",
+								"batch"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "slaMetbyorderId",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"orderId\": 1001,\r\n    \"orderCreatedTime\": \"2024-11-25T10:00:00\",\r\n    \"currentStatus\": \"PENDING\",\r\n    \"lastUpdateTime\": \"2024-11-25T10:00:00\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://16.16.57.107/api/orders/sla/order/6389018231099",
+							"protocol": "https",
+							"host": [
+								"16",
+								"16",
+								"57",
+								"107"
+							],
+							"path": [
+								"api",
+								"orders",
+								"sla",
+								"order",
+								"6389018231099"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "sla at risk",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"orderId\": 1001,\r\n    \"orderCreatedTime\": \"2024-11-25T10:00:00\",\r\n    \"currentStatus\": \"PENDING\",\r\n    \"lastUpdateTime\": \"2024-11-25T10:00:00\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://16.16.57.107/api/orders/sla/order/6389018231099",
+							"protocol": "https",
+							"host": [
+								"16",
+								"16",
+								"57",
+								"107"
+							],
+							"path": [
+								"api",
+								"orders",
+								"sla",
+								"order",
+								"6389018231099"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
