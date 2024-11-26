@@ -27,6 +27,7 @@ public class ShopifyProductSyncController {
 
             List<Product> syncedProducts = syncService.syncShopifyProducts(storeUrl);
 
+
             return ResponseEntity.ok(Map.of(
                     "message", "Successfully synced products from Shopify",
                     "count", syncedProducts.size(),
