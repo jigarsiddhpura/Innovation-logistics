@@ -1,8 +1,11 @@
 // File: src/main/java/dev/sambhav/mcf/model/Product.java
 package dev.sambhav.mcf.model;
 
+import dev.sambhav.mcf.dto.StoreType;
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.JdbcType;
+import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -55,6 +58,14 @@ public class Product {
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    @Column(name = "store_url")
+    private String storeUrl;
+
+    @JdbcType(PostgreSQLEnumJdbcType.class)
+    @Enumerated(EnumType.STRING)
+    @Column(name = "store_type")
+    private StoreType storeType;
 
     // Constructors
     public Product() {}

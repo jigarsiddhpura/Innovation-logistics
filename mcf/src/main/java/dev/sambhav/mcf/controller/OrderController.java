@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api")
@@ -36,10 +37,12 @@ public class OrderController {
     }
 
     @GetMapping("/orders")
-    public ResponseEntity<List<OrderDTO>> getAllOrders() {
-        // Added ResponseEntity for standardizing responses
-        List<Order> orders = orderService.getAllOrders();
-        List<OrderDTO> ordersDTOS=orders.stream().map(OrderService::mapToDTO).toList();
+    public ResponseEntity<List<OrderDTO>> getAllOrders(
+            @RequestParam(required = false) String storeUrl) {
+        List<Order> orders = orderService.getAllOrders(storeUrl);
+        List<OrderDTO> ordersDTOS = orders.stream()
+                .map(OrderService::mapToDTO)
+                .collect(Collectors.toList());
         return ResponseEntity.ok(ordersDTOS);
     }
 

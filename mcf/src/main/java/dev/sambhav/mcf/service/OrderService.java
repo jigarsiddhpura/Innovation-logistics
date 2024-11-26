@@ -5,6 +5,7 @@ import dev.sambhav.mcf.model.Order;
 import dev.sambhav.mcf.model.OrderStatus;
 import dev.sambhav.mcf.repository.OrderRepository;
 import jakarta.persistence.EntityNotFoundException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class OrderService {
 
@@ -44,8 +46,32 @@ public class OrderService {
         return orderRepository.save(order); // Saving the order
     }
 
-    public List<Order> getAllOrders() {
-        return orderRepository.findAll(); // Fetch all orders
+    public List<Order> getAllOrders(String storeUrl) {
+        if (storeUrl != null && !storeUrl.isEmpty()) {
+            return orderRepository.findByStoreUrl(storeUrl);
+        }
+        return orderRepository.findAll();
+    }
+
+    public List<Order> getOrdersByStoreUrl(String storeUrl) {
+        validateStoreUrl(storeUrl);
+        return orderRepository.findByStoreUrl(storeUrl);
+    }
+
+    private void validateStoreUrl(String storeUrl) {
+        if (storeUrl == null || storeUrl.isEmpty()) {
+            throw new IllegalArgumentException("Store URL cannot be empty");
+        }
+
+        // Validate store URL format and determine store type
+        StoreType storeType = null;
+        if (storeUrl.contains("shopify.com")) {
+            storeType = StoreType.SHOPIFY;
+        } else if (storeUrl.contains("dukaan.com")) {
+            storeType = StoreType.DUKAAN;
+        } else {
+            throw new IllegalArgumentException("Invalid store URL format. Must be from Shopify or Dukaan.");
+        }
     }
 
     public TrackingStatusDTO track(Long orderId) {
@@ -175,6 +201,7 @@ public class OrderService {
 
     @Transactional
     public void saveOrder(OrderDTO orderDto) {
+        log.info(orderDto.getStoreUrl());
         Order order = mapToEntity(orderDto);
         orderRepository.save(order);
     }
@@ -215,6 +242,9 @@ public class OrderService {
         order.setDeliveryEta(orderDto.getDeliveryEta());
         order.setCreatedAt(orderDto.getCreatedAt());
         order.setProcessedAt(orderDto.getProcessedAt());
+        order.setStoreUrl(orderDto.getStoreUrl());
+        order.setStoreType(orderDto.getStoreType());
+
 
         return order;
     }
@@ -272,6 +302,8 @@ public class OrderService {
         dto.setDeliveryEta(order.getDeliveryEta());
         dto.setCreatedAt(order.getCreatedAt());
         dto.setProcessedAt(order.getProcessedAt());
+        dto.setStoreUrl(order.getStoreUrl());
+        dto.setStoreType(order.getStoreType());
         return dto;
     }
 

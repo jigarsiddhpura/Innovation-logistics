@@ -8,26 +8,26 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 public class ProductRequestDTO {
+    private long sellerId;
     private Long productId;
-    private Long sellerId;
-    private String shopifyProductId;
-    private String amazonMcfSku;
-    private String name;
     private String title;
     private String productType;
     private String vendor;
     private String description;
     private BigDecimal price;
     private Integer inventoryLevel;
-    private Integer reorderThreshold;
-    private Timestamp publishedAt;
-    private Timestamp updatedAt;
+    private String amazonMcfSku;
+    private String storeUrl;
+    private StoreType storeType;
+    private LocalDateTime publishedAt;
+    private LocalDateTime updatedAt;
 
     public Long getProductId() {
         return productId;
@@ -35,5 +35,10 @@ public class ProductRequestDTO {
 
     public void setProductId(Long productId) {
         this.productId = productId;
+    }
+
+
+    public void setStoreUrl(String storeUrl) {
+        this.storeUrl = storeUrl;
     }
 }

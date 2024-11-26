@@ -5,6 +5,7 @@ import dev.sambhav.mcf.Mapper.ProductMapper;
 import dev.sambhav.mcf.dto.ProductDTO;
 import dev.sambhav.mcf.dto.ProductRequestDTO;
 import dev.sambhav.mcf.dto.ProductResponseDTO;
+import dev.sambhav.mcf.dto.StoreType;
 import dev.sambhav.mcf.model.Product;
 import dev.sambhav.mcf.model.Seller;
 import dev.sambhav.mcf.repository.ProductRepository;
@@ -42,15 +43,29 @@ public class ProductService {
     }
 
     public ProductResponseDTO addProduct(ProductRequestDTO productRequestDTO) {
-        // Check if seller exists
         Long sellerId = productRequestDTO.getSellerId();
         Seller seller = sellerRepository.findById(sellerId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Seller with id " + sellerId + " does not exist."));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                        "Seller with id " + sellerId + " does not exist."));
 
-        // Create and save new Product
         Product product = ProductMapper.toEntity(productRequestDTO);
-        // product.setSeller(seller);
+        validateAndSetStoreType(product);
         return ProductMapper.toResponseDTO(productRepository.save(product));
+    }
+
+    private void validateAndSetStoreType(Product product) {
+        if (product.getStoreUrl() == null || product.getStoreUrl().isEmpty()) {
+            throw new IllegalArgumentException("Store URL cannot be empty");
+        }
+
+        String storeUrl = product.getStoreUrl().toLowerCase();
+        if (storeUrl.contains("shopify.com")) {
+            product.setStoreType(StoreType.SHOPIFY);
+        } else if (storeUrl.contains("dukaan.com")) {
+            product.setStoreType(StoreType.DUKAAN);
+        } else {
+            throw new IllegalArgumentException("Invalid store URL. Must be from Shopify or Dukaan");
+        }
     }
 
     public ProductResponseDTO getProductById(Long id) {
@@ -66,8 +81,14 @@ public class ProductService {
                 .collect(Collectors.toList());
     }
 
-    public List<ProductResponseDTO> getAllProducts() {
-        return productRepository.findAll().stream()
+    public List<ProductResponseDTO> getAllProducts(String storeUrl) {
+        List<Product> products;
+        if (storeUrl != null && !storeUrl.isEmpty()) {
+            products = productRepository.findByStoreUrl(storeUrl);
+        } else {
+            products = productRepository.findAll();
+        }
+        return products.stream()
                 .map(ProductMapper::toResponseDTO)
                 .collect(Collectors.toList());
     }
@@ -82,8 +103,13 @@ public class ProductService {
         product.setDescription(productDto.getDescription());
         product.setPrice(productDto.getPrice());
         product.setInventoryLevel(productDto.getInventoryLevel());
-        product.setUpdatedAt(productDto.getUpdatedAt());
 
+        if (productDto.getStoreUrl() != null) {
+            product.setStoreUrl(productDto.getStoreUrl());
+            validateAndSetStoreType(product);
+        }
+
+        product.setUpdatedAt(LocalDateTime.now());
         productRepository.save(product);
     }
 
@@ -113,6 +139,9 @@ public class ProductService {
         product.setInventoryLevel(productDto.getInventoryLevel());
         product.setPublishedAt(productDto.getPublishedAt());
         product.setUpdatedAt(productDto.getUpdatedAt());
+        product.setStoreType(productDto.getStoreType());
+        product.setStoreUrl(productDto.getStoreUrl());
+        product.setAmazonMcfSku(productDto.getAmazonMcfSku());
         return product;
     }
 

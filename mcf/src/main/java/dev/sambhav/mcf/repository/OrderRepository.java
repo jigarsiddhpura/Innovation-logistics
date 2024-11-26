@@ -24,5 +24,9 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     Page<Order> findByFulfillmentStatusNot(OrderStatus status, Pageable pageable);
     List<Order> findByCreatedAtBetween(LocalDateTime start, LocalDateTime end);
 
+    List<Order> findByStoreUrl(String storeUrl);
+    void deleteByStoreUrl(String storeUrl);
+    List<Order> findByStoreUrlAndFulfillmentStatus(String storeUrl, OrderStatus status);
+
 
 }

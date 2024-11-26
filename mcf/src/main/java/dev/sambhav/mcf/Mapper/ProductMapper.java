@@ -4,11 +4,11 @@ import dev.sambhav.mcf.dto.ProductDTO;
 import dev.sambhav.mcf.dto.ProductRequestDTO;
 import dev.sambhav.mcf.dto.ProductResponseDTO;
 import dev.sambhav.mcf.model.Product;
-import jakarta.persistence.Column;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
 @Component
 public class ProductMapper {
 
@@ -21,6 +21,8 @@ public class ProductMapper {
                 .description(product.getDescription())
                 .price(product.getPrice())
                 .inventoryLevel(product.getInventoryLevel())
+                .storeUrl(product.getStoreUrl())
+                .storeType(product.getStoreType())
                 .publishedAt(product.getPublishedAt())
                 .updatedAt(product.getUpdatedAt())
                 .build();
@@ -35,10 +37,10 @@ public class ProductMapper {
         product.setDescription(dto.getDescription());
         product.setPrice(dto.getPrice());
         product.setInventoryLevel(dto.getInventoryLevel());
-        product.setPublishedAt(dto.getPublishedAt().toLocalDateTime());
-        product.setUpdatedAt(dto.getUpdatedAt().toLocalDateTime());
+        product.setAmazonMcfSku(dto.getAmazonMcfSku());
+        product.setStoreUrl(dto.getStoreUrl());
+        product.setStoreType(dto.getStoreType());
         return product;
-
     }
 
     public static ProductDTO toDTO(Product product) {
@@ -54,6 +56,9 @@ public class ProductMapper {
                 product.getDescription(),
                 product.getPrice(),
                 product.getInventoryLevel(),
+                product.getAmazonMcfSku(),
+                product.getStoreUrl(),
+                product.getStoreType(),
                 product.getPublishedAt(),
                 product.getUpdatedAt()
         );
@@ -65,7 +70,6 @@ public class ProductMapper {
                 .collect(Collectors.toList());
     }
 
-    // If you need entity to DTO conversion
     public Product toEntity(ProductDTO dto) {
         if (dto == null) {
             return null;
@@ -79,6 +83,9 @@ public class ProductMapper {
         product.setDescription(dto.getDescription());
         product.setPrice(dto.getPrice());
         product.setInventoryLevel(dto.getInventoryLevel());
+        product.setAmazonMcfSku(dto.getAmazonMcfSku());
+        product.setStoreUrl(dto.getStoreUrl());
+        product.setStoreType(dto.getStoreType());
         product.setPublishedAt(dto.getPublishedAt());
         product.setUpdatedAt(dto.getUpdatedAt());
 

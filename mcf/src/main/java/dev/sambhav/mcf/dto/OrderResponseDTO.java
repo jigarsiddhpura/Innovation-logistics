@@ -19,5 +19,7 @@ public class OrderResponseDTO {
     private LocalDateTime deliveryEta;
     private LocalDateTime createdAt;
     private LocalDateTime processedAt;
+    private String storeUrl;
+    private StoreType storeType;
 }
 

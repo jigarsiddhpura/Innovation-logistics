@@ -1,5 +1,6 @@
 package dev.sambhav.mcf.model;
 
+import dev.sambhav.mcf.dto.StoreType;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.JdbcType;
@@ -19,6 +20,14 @@ public class Order {
 
     @Column(name = "seller_id")
     private Long sellerId;
+
+    @Column(name = "store_url")
+    private String storeUrl;
+
+    @JdbcType(PostgreSQLEnumJdbcType.class)
+    @Enumerated(EnumType.STRING)
+    @Column(name = "store_type")
+    private StoreType storeType;
 
     @Column(name="order_name")
     private String orderName;

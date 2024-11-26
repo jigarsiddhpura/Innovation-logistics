@@ -21,6 +21,8 @@ public class OrderMapper {
         order.setCurrentTotalPrice(dto.getCurrentTotalPrice());
         order.setFulfillmentStatus(null);
         order.setSlaMet(dto.getSlaMet());
+        order.setStoreUrl(dto.getStoreUrl());
+        order.setStoreType(null);
 
         // Handle LocalDateTime parsing
         DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
@@ -35,7 +37,7 @@ public class OrderMapper {
 
     // WAS PUBLIC STATIC INITITALLY
     public static OrderResponseDTO toResponseDTO(Order order) {
-        OrderResponseDTO responseDTO = new OrderResponseDTO(null, null, null, null, null, null, null, null, null);
+        OrderResponseDTO responseDTO = new OrderResponseDTO(null, null, null, null, null, null, null, null, null,null,null);
         responseDTO.setOrderId(order.getOrderId());
         responseDTO.setCustomerName(order.getCustomerName());
         responseDTO.setEmail(order.getEmail());
@@ -45,6 +47,8 @@ public class OrderMapper {
         responseDTO.setDeliveryEta(order.getDeliveryEta());
         responseDTO.setCreatedAt(order.getCreatedAt());
         responseDTO.setProcessedAt(order.getProcessedAt());
+        responseDTO.setStoreUrl(order.getStoreUrl());
+        responseDTO.setStoreType(order.getStoreType());
 
         return responseDTO;
     }

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.sambhav.mcf.dto.OrderDTO;
 import dev.sambhav.mcf.dto.ProductDTO;
+import dev.sambhav.mcf.dto.StoreType;
 import dev.sambhav.mcf.model.OrderStatus;
 import jakarta.servlet.http.HttpSession;
 
@@ -44,6 +45,8 @@ public class WebhookMapper {
                 productDto.setInventoryLevel(rootNode.path("variants").get(0).path("inventory_quantity").asInt());
                 productDto.setPublishedAt(OffsetDateTime.parse(rootNode.path("published_at").asText()).toLocalDateTime());
                 productDto.setUpdatedAt(OffsetDateTime.parse(rootNode.path("updated_at").asText()).toLocalDateTime());
+                productDto.setStoreType(StoreType.SHOPIFY);
+                productDto.setStoreUrl("https://techtitansamazonsambhav.myshopify.com/");
             } else if ("dukaan".equalsIgnoreCase(platform)) {
                 productDto.setProductId(rootNode.findPath("id").asLong());
                 productDto.setTitle(rootNode.findPath("title").asText());
@@ -54,6 +57,9 @@ public class WebhookMapper {
                 productDto.setInventoryLevel(rootNode.findPath("variants").get(0).findPath("inventory_quantity").asInt());  // Default inventory since customer payload doesn't have inventory
                 productDto.setPublishedAt(LocalDateTime.now());
                 productDto.setUpdatedAt(LocalDateTime.now());
+                productDto.setAmazonMcfSku("mcf9453");
+                productDto.setStoreType(StoreType.DUKAAN);
+                productDto.setStoreUrl("https://mydukaan.io/techtitans1");
             } else {
                 throw new IllegalArgumentException("Unsupported platform: " + platform);
             }
@@ -93,6 +99,8 @@ public class WebhookMapper {
                 orderDto.setDeliveryEta(LocalDateTime.now());
                 orderDto.setCreatedAt(LocalDateTime.now());
                 orderDto.setProcessedAt(LocalDateTime.now());
+                orderDto.setStoreType(StoreType.SHOPIFY);
+                orderDto.setStoreUrl("https://techtitansamazonsambhav.myshopify.com/");
             } else if ("dukaan".equalsIgnoreCase(platform)) {
                 String orderIdStr = rootNode.findPath("id").asText();
                 orderDto.setOrderId(Long.parseLong(orderIdStr));
@@ -107,6 +115,8 @@ public class WebhookMapper {
                 orderDto.setDeliveryEta(LocalDateTime.now());
                 orderDto.setCreatedAt(LocalDateTime.now());
                 orderDto.setProcessedAt(LocalDateTime.now());
+                orderDto.setStoreType(StoreType.DUKAAN);
+                orderDto.setStoreUrl("https://mydukaan.io/techtitans1");
             }
             return orderDto;
         } catch (Exception e) {

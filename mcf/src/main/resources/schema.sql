@@ -21,7 +21,9 @@ CREATE TABLE IF NOT EXISTS products (
     inventory_level INT,
     amazon_mcf_sku VARCHAR(255) UNIQUE,
     published_at TIMESTAMP,
-    updated_at TIMESTAMP
+    updated_at TIMESTAMP,
+    store_url VARCHAR(255),
+    store_type store_type
 );
 
 
@@ -56,7 +58,10 @@ CREATE TABLE IF NOT EXISTS orders  (
     sla_met BOOLEAN,
     delivery_eta TIMESTAMP,
     created_at TIMESTAMP DEFAULT NOW(),
-    processed_at TIMESTAMP DEFAULT NOW()
+    processed_at TIMESTAMP DEFAULT NOW(),
+    store_type store_type,
+    store_url VARCHAR(255)
+
 );
 
 CREATE TABLE IF NOT EXISTS returns  (
@@ -85,5 +90,16 @@ CREATE TABLE IF NOT EXISTS forecasts  (
     notes TEXT,
     created_at TIMESTAMP DEFAULT NOW()
 );
+
+-- DROP TYPE IF EXISTS store_type CASCADE;
+--
+-- -- Create the store_type enum
+-- CREATE TYPE store_type AS ENUM ('SHOPIFY', 'DUKAAN');
+--
+-- ALTER TABLE products
+-- ADD COLUMN store_url VARCHAR(255),
+-- ADD COLUMN store_type store_type;
+-- CREATE INDEX idx_product_store_url ON products(store_url);
+-- CREATE INDEX idx_product_store_type ON products(store_type);
 
 

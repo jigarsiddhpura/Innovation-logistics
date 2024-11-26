@@ -20,5 +20,7 @@ public class OrderRequestDTO {
     private String deliveryEta;
     private String createdAt;
     private String processedAt;
+    private String storeUrl;
+    private StoreType storeType;
 }
 

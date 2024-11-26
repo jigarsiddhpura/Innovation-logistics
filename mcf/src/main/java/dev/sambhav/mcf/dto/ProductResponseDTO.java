@@ -21,6 +21,9 @@ public class ProductResponseDTO {
     private String description;
     private BigDecimal price;
     private Integer inventoryLevel;
+    private String amazonMcfSku;
+    private String storeUrl;
+    private StoreType storeType;
     private LocalDateTime publishedAt;
     private LocalDateTime updatedAt;
 }

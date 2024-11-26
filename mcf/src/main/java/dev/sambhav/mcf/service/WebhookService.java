@@ -3,6 +3,7 @@ package dev.sambhav.mcf.service;
 import dev.sambhav.mcf.Mapper.WebhookMapper;
 import dev.sambhav.mcf.dto.OrderDTO;
 import dev.sambhav.mcf.dto.ProductDTO;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -10,6 +11,7 @@ import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.util.Base64;
 
+@Slf4j
 @Service
 public class WebhookService {
 
@@ -30,27 +32,6 @@ public class WebhookService {
         this.orderService = orderService;
     }
 
-//    public boolean verifyWebhookSignature(String payload, String platform, String shopifyHmacHeader, String dukaanSignatureHeader) {
-//        try {
-//            String secret = "shopify".equals(platform) ? shopifySecret : dukaanSecret;
-//            String header = "shopify".equals(platform) ? shopifyHmacHeader : dukaanSignatureHeader;
-//
-//            if (secret == null || header == null) {
-//                return false;
-//            }
-//
-//            Mac hmac = Mac.getInstance("HmacSHA256");
-//            SecretKeySpec secretKey = new SecretKeySpec(secret.getBytes(), "HmacSHA256");
-//            hmac.init(secretKey);
-//            byte[] hash = hmac.doFinal(payload.getBytes());
-//            String calculatedSignature = Base64.getEncoder().encodeToString(hash);
-//
-//            return header.equals(calculatedSignature);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return false;
-//        }
-//    }
 
     public boolean verifyShopifySignature(String payload, String shopifyHmacHeader) {
         try {
@@ -73,6 +54,7 @@ public class WebhookService {
 
     public void processProductCreateDukaan(String payload, String platform) {
         ProductDTO productDto = webhookMapper.mapToProductDto(payload,platform);
+        log.info(productDto.toString());
         productService.saveProduct(productDto);
     }
 
