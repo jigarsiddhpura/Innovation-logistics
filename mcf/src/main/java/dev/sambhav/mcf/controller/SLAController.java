@@ -12,6 +12,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -19,6 +20,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -104,19 +107,31 @@ public class SLAController {
     }
 
     @GetMapping("/at-risk")
-    public ResponseEntity<ApiResponse<Page<SLAPredictionResult>>> getAtRiskOrders(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
+    public ResponseEntity<ApiResponse<List<SLAPredictionResult>>> getAtRiskOrders(
+            @RequestParam(required = true) String storeUrl,
             @RequestParam(required = false) SLARiskLevel minRiskLevel) {
         try {
-            log.info("Fetching at-risk orders with minimum risk level: {}", minRiskLevel);
-            Page<SLAPredictionResult> atRiskOrders = getOrdersAtRisk(
-                    PageRequest.of(page, size),
+            log.info("Fetching at-risk orders for store: {} with minimum risk level: {}", storeUrl, minRiskLevel);
+
+            // Decode URL in case it's encoded
+            String decodedStoreUrl = URLDecoder.decode(storeUrl, StandardCharsets.UTF_8.toString());
+
+            List<SLAPredictionResult> atRiskOrders = getOrdersAtRisk(
+                    decodedStoreUrl,
                     minRiskLevel != null ? minRiskLevel : SLARiskLevel.MEDIUM
             );
-            return ResponseEntity.ok(new ApiResponse<>("At-risk orders retrieved", true, atRiskOrders));
+
+            return ResponseEntity.ok(new ApiResponse<>(
+                    String.format("At-risk orders retrieved for store: %s", decodedStoreUrl),
+                    true,
+                    atRiskOrders
+            ));
+        } catch (IllegalArgumentException e) {
+            log.error("Invalid store URL provided: {}", storeUrl, e);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ApiResponse<>("Invalid store URL provided", false, null));
         } catch (Exception e) {
-            log.error("Error fetching at-risk orders", e);
+            log.error("Error fetching at-risk orders for store: {}", storeUrl, e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ApiResponse<>("Error fetching at-risk orders", false, null));
         }
@@ -158,18 +173,15 @@ public class SLAController {
                 ));
     }
 
-    private Page<SLAPredictionResult> getOrdersAtRisk(Pageable pageable, SLARiskLevel minRiskLevel) {
-        Page<Order> orders = orderRepository.findByFulfillmentStatusNot(
-                OrderStatus.DELIVERED,
-                pageable
-        );
+    private List<SLAPredictionResult> getOrdersAtRisk(String storeUrl, SLARiskLevel minRiskLevel) {
+        // Get all orders except pending ones for the specific store
+        List<Order> orders = orderRepository.findByStoreUrlAndFulfillmentStatusNot(storeUrl, OrderStatus.SHIPPED);
 
-        return (Page<SLAPredictionResult>) orders.map(order -> {
-            SLAPredictionResult prediction = slaPredictionService.predictSLAStatus(
-                    buildRequestFromOrder(order.getOrderId())
-            );
-            return prediction.getRiskLevel().compareTo(minRiskLevel) >= 0 ? prediction : null;
-        }).filter(Objects::nonNull);
+        // Convert orders to predictions and filter
+        return orders.stream()
+                .map(order -> slaPredictionService.predictSLAStatus(buildRequestFromOrder(order.getOrderId())))
+                .filter(prediction -> prediction.getRiskLevel().compareTo(minRiskLevel) >= 0)
+                .collect(Collectors.toList());
     }
 }
 

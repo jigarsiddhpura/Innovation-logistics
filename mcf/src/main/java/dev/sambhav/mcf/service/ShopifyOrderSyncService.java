@@ -30,10 +30,14 @@ public class ShopifyOrderSyncService {
     private OrderRepository orderRepository;
 
     @Autowired
+    private OrderService orderService;
+
+    @Autowired
     private RestTemplate restTemplate;
 
     public List<Order> syncShopifyOrders(String storeUrl) {
         try {
+            storeUrl=orderService.extractBaseUrl(storeUrl)+'/';
             // Remove any https:// or http:// if present
             storeUrl = storeUrl.replaceAll("^(https?://)", "");
 
@@ -97,8 +101,37 @@ public class ShopifyOrderSyncService {
 
         // Map basic order information
         order.setOrderId(orderNode.get("order_number").asLong());
-        order.setOrderName("#" + orderNode.get("order_number").asText());
 
+        // Get line items and create order name
+        JsonNode lineItems = orderNode.get("line_items");
+        StringBuilder orderNameBuilder = new StringBuilder();
+        if (lineItems != null && lineItems.isArray() && lineItems.size() > 0) {
+            for (int i = 0; i < lineItems.size(); i++) {
+                JsonNode item = lineItems.get(i);
+                String title = item.get("title").asText();
+                int quantity = item.get("quantity").asInt();
+
+                orderNameBuilder.append(quantity).append("x ").append(title);
+
+                // Add comma if not the last item
+                if (i < lineItems.size() - 1) {
+                    orderNameBuilder.append(", ");
+                }
+            }
+
+            // If the order name is too long, truncate it
+            String orderName = orderNameBuilder.toString();
+            if (orderName.length() > 255) { // Assuming your database field limit
+                orderName = orderName.substring(0, 252) + "...";
+            }
+
+            order.setOrderName(orderName);
+        } else {
+            // Fallback if no line items
+            order.setOrderName("Order #" + orderNode.get("order_number").asText());
+        }
+
+        // Rest of your existing code...
         // Customer information
         JsonNode customer = orderNode.get("customer");
         if (customer != null && !customer.isNull()) {
@@ -108,10 +141,8 @@ public class ShopifyOrderSyncService {
             order.setEmail(customer.get("email").asText());
         }
 
-        // Price information
         order.setCurrentTotalPrice(new BigDecimal(orderNode.get("total_price").asText()));
 
-        // Fulfillment status mapping
         String fulfillmentStatus = orderNode.get("fulfillment_status").asText("null");
         switch (fulfillmentStatus) {
             case "fulfilled" -> order.setFulfillmentStatus(OrderStatus.DELIVERED);
@@ -120,11 +151,9 @@ public class ShopifyOrderSyncService {
             default -> order.setFulfillmentStatus(OrderStatus.PENDING);
         }
 
-        // Store information
-        order.setStoreUrl("https://"+storeUrl);
+        order.setStoreUrl("https://" + storeUrl);
         order.setStoreType(StoreType.SHOPIFY);
 
-        // Timestamps
         if (orderNode.has("created_at") && !orderNode.get("created_at").isNull()) {
             order.setCreatedAt(
                     OffsetDateTime.parse(orderNode.get("created_at").asText())
@@ -141,10 +170,7 @@ public class ShopifyOrderSyncService {
             );
         }
 
-        // Set estimated delivery date (e.g., 3 days from created date)
         order.setDeliveryEta(order.getCreatedAt().plusDays(3));
-
-        // Set SLA met based on fulfillment status
         order.setSlaMet(OrderStatus.DELIVERED.equals(order.getFulfillmentStatus()));
 
         return order;

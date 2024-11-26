@@ -42,7 +42,7 @@ public class OrderMapper {
         responseDTO.setCustomerName(order.getCustomerName());
         responseDTO.setEmail(order.getEmail());
         responseDTO.setCurrentTotalPrice(order.getCurrentTotalPrice());
-        responseDTO.setFulfillmentStatus(null);
+        responseDTO.setFulfillmentStatus(String.valueOf(order.getFulfillmentStatus()));
         responseDTO.setSlaMet(order.getSlaMet());
         responseDTO.setDeliveryEta(order.getDeliveryEta());
         responseDTO.setCreatedAt(order.getCreatedAt());

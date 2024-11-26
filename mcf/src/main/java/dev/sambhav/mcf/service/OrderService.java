@@ -1,17 +1,21 @@
 package dev.sambhav.mcf.service;
 
 import dev.sambhav.mcf.Mapper.OrderMapper;
+import dev.sambhav.mcf.Mapper.ProductMapper;
 import dev.sambhav.mcf.dto.*;
 import dev.sambhav.mcf.model.Order;
 import dev.sambhav.mcf.model.OrderStatus;
+import dev.sambhav.mcf.model.Product;
 import dev.sambhav.mcf.repository.OrderRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.awt.print.Pageable;
 import java.net.URI;
@@ -57,6 +61,13 @@ public class OrderService {
             return orderRepository.findByStoreUrl(baseUrl);
         }
         return orderRepository.findAll();
+    }
+
+    public OrderResponseDTO getProductById(Long id) {
+        Order ordered = orderRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found with id " + id));
+        log.info(ordered.toString());
+        return OrderMapper.toResponseDTO(ordered);
     }
     public String extractBaseUrl(String url) {
         if (url == null || url.isEmpty()) {

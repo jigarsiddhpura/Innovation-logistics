@@ -3,6 +3,7 @@ package dev.sambhav.mcf.service;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.sambhav.mcf.dto.ProductDTO;
+import dev.sambhav.mcf.model.Order;
 import dev.sambhav.mcf.model.Product;
 import dev.sambhav.mcf.dto.StoreType;
 import dev.sambhav.mcf.repository.ProductRepository;
@@ -30,10 +31,14 @@ public class ShopifyProductSyncService {
     private ProductRepository productRepository;
 
     @Autowired
+    private OrderService orderService;
+
+    @Autowired
     private RestTemplate restTemplate;
 
     public List<Product> syncShopifyProducts(String storeUrl) {
         try {
+            storeUrl=orderService.extractBaseUrl(storeUrl)+'/';
             // Remove any https:// or http:// if present
             storeUrl = storeUrl.replaceAll("^(https?://)", "");
 

@@ -45,6 +45,11 @@ public class OrderController {
                 .collect(Collectors.toList());
         return ResponseEntity.ok(ordersDTOS);
     }
+    @GetMapping("/orders/{id}")
+    public ResponseEntity<OrderResponseDTO> getProductById(@PathVariable Long id) {
+        OrderResponseDTO order = orderService.getProductById(id);
+        return ResponseEntity.ok(order);
+    }
 
     @GetMapping("/orders/track/{orderId}")
     public ResponseEntity<TrackingStatusDTO> trackOrder(@PathVariable Long orderId) {
