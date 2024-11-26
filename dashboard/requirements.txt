@@ -7,3 +7,5 @@ langchain-core
 langchain-community
 pydantic
 boto3
+pyTelegramBotAPI
+telebot
