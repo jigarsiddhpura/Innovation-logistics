@@ -18,7 +18,7 @@ public class ShopifyProductSyncController {
     @Autowired
     private ShopifyProductSyncService syncService;
 
-    @PostMapping("/shopify")
+    @PostMapping("/shopify/product")
     public ResponseEntity<?> syncShopifyProducts(
             @RequestParam(name = "storeUrl") String storeUrl) {
         try {
@@ -40,7 +40,7 @@ public class ShopifyProductSyncController {
         }
     }
 
-    @DeleteMapping("/shopify")
+    @DeleteMapping("/shopify/products")
     public ResponseEntity<?> deleteAllProducts(@RequestParam String storeUrl) {
         try {
             syncService.deleteAllProducts(storeUrl);

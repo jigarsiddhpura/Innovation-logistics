@@ -23,6 +23,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.math.BigDecimal;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -84,7 +86,8 @@ public class ProductService {
     public List<ProductResponseDTO> getAllProducts(String storeUrl) {
         List<Product> products;
         if (storeUrl != null && !storeUrl.isEmpty()) {
-            products = productRepository.findByStoreUrl(storeUrl);
+            String baseUrl = extractBaseUrl(storeUrl)+'/';
+            products = productRepository.findByStoreUrl(baseUrl);
         } else {
             products = productRepository.findAll();
         }
@@ -92,6 +95,41 @@ public class ProductService {
                 .map(ProductMapper::toResponseDTO)
                 .collect(Collectors.toList());
     }
+
+    public String extractBaseUrl(String url) {
+        if (url == null || url.isEmpty()) {
+            return url;
+        }
+
+        try {
+            URI uri = new URI(url);
+            String host = uri.getHost();
+            String path = uri.getPath();
+
+            // Remove trailing slash if present
+            if (url.endsWith("/")) {
+                url = url.substring(0, url.length() - 1);
+            }
+
+            // Case 1: myshopify.com domain - keep everything before /products, /orders etc.
+            if (host != null && host.contains("myshopify.com")) {
+                return uri.getScheme() + "://" + host;
+            }
+
+            // Case 2: mydukaan.io pattern - keep up to store identifier
+            if (host != null && host.contains("mydukaan.io")) {
+                String[] pathSegments = path.substring(1).split("/");
+                if (pathSegments.length > 0) {
+                    return uri.getScheme() + "://" + host + "/" + pathSegments[0];
+                }
+            }
+
+            return url;
+        } catch (URISyntaxException e) {
+            return url;
+        }
+    }
+
     @Transactional
     public void updateProduct(ProductDTO productDto) {
         Product product = productRepository.findById(productDto.getProductId())

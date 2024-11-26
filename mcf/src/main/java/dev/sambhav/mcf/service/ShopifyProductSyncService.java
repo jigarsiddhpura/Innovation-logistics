@@ -117,7 +117,7 @@ public class ShopifyProductSyncService {
 //        }
 
         // Store information
-        product.setStoreUrl(storeUrl);
+        product.setStoreUrl("https://"+storeUrl);
         product.setStoreType(StoreType.SHOPIFY);
 
         // Timestamps

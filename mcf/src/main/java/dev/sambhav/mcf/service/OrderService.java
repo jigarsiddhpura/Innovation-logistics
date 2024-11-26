@@ -1,5 +1,6 @@
 package dev.sambhav.mcf.service;
 
+import dev.sambhav.mcf.Mapper.OrderMapper;
 import dev.sambhav.mcf.dto.*;
 import dev.sambhav.mcf.model.Order;
 import dev.sambhav.mcf.model.OrderStatus;
@@ -13,6 +14,8 @@ import org.springframework.stereotype.Service;
 import jakarta.transaction.Transactional;
 
 import java.awt.print.Pageable;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -47,10 +50,46 @@ public class OrderService {
     }
 
     public List<Order> getAllOrders(String storeUrl) {
+        List<Order> orders;
         if (storeUrl != null && !storeUrl.isEmpty()) {
-            return orderRepository.findByStoreUrl(storeUrl);
+            String baseUrl = extractBaseUrl(storeUrl)+'/';
+            log.info(baseUrl);
+            return orderRepository.findByStoreUrl(baseUrl);
         }
         return orderRepository.findAll();
+    }
+    public String extractBaseUrl(String url) {
+        if (url == null || url.isEmpty()) {
+            return url;
+        }
+
+        try {
+            URI uri = new URI(url);
+            String host = uri.getHost();
+            String path = uri.getPath();
+
+            // Remove trailing slash if present
+            if (url.endsWith("/")) {
+                url = url.substring(0, url.length() - 1);
+            }
+
+            // Case 1: myshopify.com domain - keep everything before /products, /orders etc.
+            if (host != null && host.contains("myshopify.com")) {
+                return uri.getScheme() + "://" + host;
+            }
+
+            // Case 2: mydukaan.io pattern - keep up to store identifier
+            if (host != null && host.contains("mydukaan.io")) {
+                String[] pathSegments = path.substring(1).split("/");
+                if (pathSegments.length > 0) {
+                    return uri.getScheme() + "://" + host + "/" + pathSegments[0];
+                }
+            }
+
+            return url;
+        } catch (URISyntaxException e) {
+            return url;
+        }
     }
 
     public List<Order> getOrdersByStoreUrl(String storeUrl) {
