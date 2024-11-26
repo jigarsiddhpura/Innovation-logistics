@@ -1,0 +1,11 @@
+{
+  "manifest_version": 3,
+  "name": "MCF Connect",
+  "version": "0.0.1",
+  "description": "MCF Connect Extension",
+  "action": {
+    "default_icon": "src/assets/icons/MCFC.png"
+  },
+  "permissions": ["activeTab"],
+  "host_permissions": ["*://*.shopify.com/*", "*://*.dukaan.com/*"]
+}
