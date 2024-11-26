@@ -18,7 +18,7 @@ public class ShopifyProductSyncController {
     @Autowired
     private ShopifyProductSyncService syncService;
 
-    @PostMapping("/shopify/product")
+    @PostMapping("/shopify/products")
     public ResponseEntity<?> syncShopifyProducts(
             @RequestParam(name = "storeUrl") String storeUrl) {
         try {
