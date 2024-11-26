@@ -24,7 +24,6 @@ public class ShopifyProductSyncController {
         try {
             // Clean up the store URL if needed
             storeUrl = storeUrl.trim().toLowerCase();
-
             List<Product> syncedProducts = syncService.syncShopifyProducts(storeUrl);
 
             return ResponseEntity.ok(Map.of(
