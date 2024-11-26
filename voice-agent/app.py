@@ -4,7 +4,7 @@ from datetime import datetime
 import requests
 import os
 from dotenv import load_dotenv
-from openai_priority import analyze_priority
+from priority import analyze_priority
 load_dotenv()
 
 app = Flask(__name__)

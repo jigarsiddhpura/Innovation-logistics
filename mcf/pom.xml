@@ -117,6 +117,7 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
 		</plugins>
+		<finalName>amazon-sambhav-backend</finalName>
 	</build>
 
 </project>
