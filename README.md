@@ -57,6 +57,16 @@ git clone https://github.com/jigarssiddhpura/Innovation-logistics.git
 cd backend
 ```
 
+### 2. Create SSH tunnel from local machine to RDS via Bastion Host (Optional for Bastion Model)
+```bash
+ssh -i "path/to/your-key.pem" -N -L 5433:your-rds-endpoint:5432 ubuntu@your-ec2-public-ip
+```
+
+### 3. Run Spring Boot application
+```bash
+mvn spring-boot:run
+```
+
 ### 2. Configure Environment Variables
 Create an application.properties or application.yml file with the following configuration:
 
