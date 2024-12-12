@@ -1,0 +1,8 @@
+spring:
+    datasource:
+        username: postgres
+        password: sambhav123
+        url: jdbc:postgresql://sambhav-postgres-instance.czwc8kayugg1.us-east-1.rds.amazonaws.com:5432/sambhav_db 
+    sql:
+        init:
+            mode: always  
