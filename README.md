@@ -4,6 +4,7 @@ A comprehensive no-code platform designed to simplify e-commerce operations for 
 
 ## 📑 Table of Contents
 - [Overview](#overview)
+- [Demo](#demo)
 - [Key Features](#key-features)
 - [Technology Stack](#technology-stack)
 - [Getting Started](#getting-started)
@@ -13,6 +14,10 @@ A comprehensive no-code platform designed to simplify e-commerce operations for 
 
 ## 🌟 Overview
 Tech Titans has developed a versatile tool that addresses key challenges SMBs face in managing inventory, processing returns, order tracking & fulfillment, and customer communication across multiple sales channels.
+
+## 📹 Demo
+https://github.com/user-attachments/assets/bfda57c7-c507-442e-b2c3-2b7a3423c8d8
+
 
 ## 📐 Architecture
 
