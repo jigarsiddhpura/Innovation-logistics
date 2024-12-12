@@ -4,6 +4,7 @@ A comprehensive no-code platform designed to simplify e-commerce operations for 
 
 ## 📑 Table of Contents
 - [Introduction](#introduction)
+- [HLD](#HLD)
 - [Prerequisites](#prerequisites)
 - [Project Structure](#project-structure)
 - [Setting Up the Environment](#setting-up-the-environment)
@@ -18,6 +19,9 @@ This project implements a backend system for seamless integration between Amazon
 - Forecasting Service
 - Customer Service
 - Tracking Service
+
+## 🧩 HLD
+https://github.com/user-attachments/assets/e1b73e43-264a-4fab-a43a-addc0bfe2660
 
 ## 📋 Prerequisites
 
